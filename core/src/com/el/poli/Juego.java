@@ -20,7 +20,7 @@ public class Juego extends ApplicationAdapter {
 	private static int WIDTH; //Aquí almacenaremos la anchura en tiles
 	private static int HEIGHT; //Aquí almacenaremos la altura en tiles
 	public static final float unitScale = 1/16f; //Nos servirá para establecer que la pantalla se divide en tiles de 16 pixeles;
-	private Jugador jugador;
+	private Jugador jugon;
 	private boolean generoJugador;
 
 
@@ -44,7 +44,7 @@ public class Juego extends ApplicationAdapter {
 		//CREACIóN DEL MUNDO
 		float w = Gdx.graphics.getWidth(); //Obtenemos la anchura de nuestra pantalla en pixels
 		float h = Gdx.graphics.getHeight(); //Obtenemos la atura de nuestra pantalla en pixels
-		TiledMap map = new TmxMapLoader().load("mapa/shemediomapa" +
+		TiledMap map = new TmxMapLoader().load("mapa/desiertazo" +
 				".tmx"); //Cargamos el tilemap desde assets
 		renderer = new OrthogonalTiledMapRenderer(map, unitScale); //Establecemos el renderizado del mapa dividido en Tiles de 32 dp.
 		camera = new OrthographicCamera(); //Declaramos la cámara a través de la que veremos el mundo
@@ -63,11 +63,12 @@ public class Juego extends ApplicationAdapter {
 		camera.update(); //Colocamos la Cámara.
 
 		//Inicializar Sprites
-		jugador=new Jugador(camera,map);
+		jugon=new Jugador(camera,map);
 
 		//ESCUCHADORES
 		InputMultiplexer multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(new EscuchadorTecladoCamara(camera,map));
+		multiplexer.addProcessor(new EscuchadorTecladoJugador(jugon));
 		Gdx.input.setInputProcessor(multiplexer);
 
 	}
@@ -91,7 +92,7 @@ public class Juego extends ApplicationAdapter {
 
 		renderer.setView(camera); //Establecemos la vista del mundo a través de la cámara.
 
-		jugador.dibujar();
+		jugon.dibujar();
 
 	}
 
@@ -100,9 +101,10 @@ public class Juego extends ApplicationAdapter {
 	 * al dispose de todos los elementos que tengan uno. La mayoría
 	 * de los de LibGdx la tiene.
 	 */
+
 	@Override
 	public void dispose () {
-		jugador.dispose();
+		jugon.dispose();
 		renderer.dispose(); //Destruimos el objeto que renderiza un mapa, para no tener filtraciones de memoria
 	}
 }
