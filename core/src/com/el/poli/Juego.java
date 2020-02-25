@@ -22,6 +22,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.el.poli.actores.Boo;
 import com.el.poli.actores.Vegeta;
 import com.el.poli.entradas.EscuchadorTeclado;
@@ -54,7 +55,8 @@ public class Juego extends Game{
 		camara.position.y= vegeta.getY();
 		teclado = new EscuchadorTeclado(vegeta);
 		Gdx.input.setInputProcessor(teclado);
-		bubu.addAction(Actions.moveTo(vegeta.getX(), 4, 400));
+
+
 
 
 

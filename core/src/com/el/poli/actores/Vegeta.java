@@ -53,8 +53,7 @@ public class Vegeta extends Actor {
         propiedadesFisicasCuerpo.density = 1f;
         cuerpo.createFixture(propiedadesFisicasCuerpo);
 
-        sprite.setOrigin(this.sprite.getWidth() / 2,
-                this.sprite.getHeight() / 2);
+        sprite.setOrigin(this.sprite.getWidth() / 2,this.sprite.getHeight() / 2);
 
     }
 

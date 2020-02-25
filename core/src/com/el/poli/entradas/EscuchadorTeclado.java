@@ -31,15 +31,15 @@ public class EscuchadorTeclado extends InputListener implements InputProcessor{
     public boolean keyDown(int keycode) {
         Gdx.app.log("eventoDown","Input "+keycode);
         switch (keycode) {
-            case Input.Keys.LEFT:
+            case Input.Keys.A:
                 vegeta.getCuerpo().setLinearVelocity(new Vector2(-5,0));
 
                 break;
-            case Input.Keys.RIGHT:
+            case Input.Keys.D:
                 vegeta.getCuerpo().setLinearVelocity(new Vector2(20,5));
 
                 break;
-            case Input.Keys.UP:
+            case Input.Keys.W:
 
                     vegeta.getCuerpo().applyForceToCenter(0, 500, true);
 
