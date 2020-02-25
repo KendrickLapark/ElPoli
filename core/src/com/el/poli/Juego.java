@@ -45,7 +45,7 @@ public class Juego extends Game{
 
 		batch = new SpriteBatch();
 		world = new World(new Vector2(0,-9.8f),true);
-		vegeta = new Vegeta(world);
+		vegeta = new Vegeta(world,"personajes/vegira.png");
 		bubu = new Boo(world);
 		camara = new OrthographicCamera(10,10);
 		mapa = new TmxMapLoader().load("mapa/mapa1.tmx");
