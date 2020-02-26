@@ -23,7 +23,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.el.poli.actores.Boo;
+import com.el.poli.actores.CellJr;
 import com.el.poli.actores.Vegeta;
 import com.el.poli.entradas.EscuchadorTeclado;
 
@@ -36,6 +38,7 @@ public class Juego extends Game{
 	private OrthogonalTiledMapRenderer renderer;
 	private Vegeta vegeta;
 	private Boo bubu;
+	//private CellJr cellJr;
 	private Box2DDebugRenderer dbRenderer;
 	private static final float pixelsPorCuadro = 16f;
 	private EscuchadorTeclado teclado;
@@ -45,19 +48,18 @@ public class Juego extends Game{
 
 		batch = new SpriteBatch();
 		world = new World(new Vector2(0,-9.8f),true);
-		vegeta = new Vegeta(world,"personajes/vegira.png");
-		bubu = new Boo(world);
+		vegeta = new Vegeta(world,"personajes/vegira.png",5,4);
+		bubu = new Boo(world, "personajes/boo.png",10,2);
+		//cellJr = new CellJr(world,"personajes/celljr.png", 9,2);
 		camara = new OrthographicCamera(10,10);
 		mapa = new TmxMapLoader().load("mapa/mapa1.tmx");
 		renderer = new OrthogonalTiledMapRenderer(mapa,1/pixelsPorCuadro);
 		this.dbRenderer = new Box2DDebugRenderer();
 		camara.position.x=vegeta.getX();
 		camara.position.y= vegeta.getY();
+		camara.zoom=4f;
 		teclado = new EscuchadorTeclado(vegeta);
 		Gdx.input.setInputProcessor(teclado);
-
-
-
 
 
 		for (MapObject objeto:mapa.getLayers().get("suelo").getObjects()){
@@ -86,6 +88,9 @@ public class Juego extends Game{
 		batch.begin();
 		vegeta.draw(batch,0);
 		bubu.draw(batch,0);
+		//cellJr.draw(batch,0);
+		bubu.patrullar();
+
 		batch.end();
 		camara.update();
 		dbRenderer.render(world,camara.combined);
@@ -103,8 +108,8 @@ public class Juego extends Game{
 	public void dispose() {
 		world.dispose();
 		renderer.dispose();
-		this.dbRenderer.dispose();
 		this.batch.dispose();
+		this.dbRenderer.dispose();
 	}
 }
 

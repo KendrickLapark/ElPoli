@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.el.poli.actores.Boo;
 import com.el.poli.actores.Vegeta;
 
 public class EscuchadorTeclado extends InputListener implements InputProcessor{
@@ -36,7 +37,7 @@ public class EscuchadorTeclado extends InputListener implements InputProcessor{
 
                 break;
             case Input.Keys.D:
-                vegeta.getCuerpo().setLinearVelocity(new Vector2(20,5));
+                vegeta.getCuerpo().setLinearVelocity(new Vector2(12,0));
 
                 break;
             case Input.Keys.W:
@@ -44,6 +45,7 @@ public class EscuchadorTeclado extends InputListener implements InputProcessor{
                     vegeta.getCuerpo().applyForceToCenter(0, 500, true);
 
                 break;
+
         }
         return true;
     }

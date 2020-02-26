@@ -20,8 +20,17 @@ import java.util.HashSet;
 
 public class Vegeta extends Personaje {
 
+    private OrthographicCamera camara; //Cámara que renderiza al jugado
 
     public Vegeta(World w, String rutaTextura) {
         super(w, rutaTextura);
+    }
+
+    public Vegeta(World w, String rutaTextura, float x, float y) {
+        super(w, rutaTextura, x, y);
+    }
+
+    public OrthographicCamera getCamara(){
+        return this.camara;
     }
 }
