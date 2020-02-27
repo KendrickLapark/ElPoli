@@ -15,9 +15,7 @@ public class CellJr extends Personaje {
     public void patrulla(){
 
 
-        if(getX()>=9){
-            this.getCuerpo().setLinearVelocity(-2,0);
-        }
+
 
     }
 }

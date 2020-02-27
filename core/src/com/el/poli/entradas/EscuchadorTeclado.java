@@ -33,16 +33,16 @@ public class EscuchadorTeclado extends InputListener implements InputProcessor{
         Gdx.app.log("eventoDown","Input "+keycode);
         switch (keycode) {
             case Input.Keys.A:
-                vegeta.getCuerpo().setLinearVelocity(new Vector2(-5,0));
+                vegeta.getCuerpo().setLinearVelocity(new Vector2(-16,0));
 
                 break;
             case Input.Keys.D:
-                vegeta.getCuerpo().setLinearVelocity(new Vector2(12,0));
+                vegeta.getCuerpo().setLinearVelocity(new Vector2(16,0));
 
                 break;
             case Input.Keys.W:
 
-                    vegeta.getCuerpo().applyForceToCenter(0, 500, true);
+                    vegeta.getCuerpo().applyForceToCenter(0, 1000, true);
 
                 break;
 

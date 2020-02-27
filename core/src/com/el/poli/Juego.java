@@ -28,6 +28,7 @@ import com.el.poli.actores.Boo;
 import com.el.poli.actores.CellJr;
 import com.el.poli.actores.Vegeta;
 import com.el.poli.entradas.EscuchadorTeclado;
+import com.el.poli.objetos.Bola;
 
 public class Juego extends Game{
 
@@ -38,6 +39,7 @@ public class Juego extends Game{
 	private OrthogonalTiledMapRenderer renderer;
 	private Vegeta vegeta;
 	private Boo bubu;
+	private Bola bola1, bola2, bola3;
 	//private CellJr cellJr;
 	private Box2DDebugRenderer dbRenderer;
 	private static final float pixelsPorCuadro = 16f;
@@ -53,11 +55,14 @@ public class Juego extends Game{
 		//cellJr = new CellJr(world,"personajes/celljr.png", 9,2);
 		camara = new OrthographicCamera(10,10);
 		mapa = new TmxMapLoader().load("mapa/mapa1.tmx");
+		bola1 = new Bola(world, "bolas/1.png", 60, 10);
+		bola2 = new Bola(world, "bolas/2.png", 20,5);
+		bola3 = new Bola(world, "bolas/3.png", 25,5);
 		renderer = new OrthogonalTiledMapRenderer(mapa,1/pixelsPorCuadro);
 		this.dbRenderer = new Box2DDebugRenderer();
 		camara.position.x=vegeta.getX();
 		camara.position.y= vegeta.getY();
-		camara.zoom=4f;
+		//camara.zoom=8f;
 		teclado = new EscuchadorTeclado(vegeta);
 		Gdx.input.setInputProcessor(teclado);
 
@@ -88,6 +93,9 @@ public class Juego extends Game{
 		batch.begin();
 		vegeta.draw(batch,0);
 		bubu.draw(batch,0);
+		bola1.draw(batch,0);
+		bola2.draw(batch,0);
+		bola3.draw(batch,0);
 		//cellJr.draw(batch,0);
 		bubu.patrullar();
 
@@ -111,5 +119,7 @@ public class Juego extends Game{
 		this.batch.dispose();
 		this.dbRenderer.dispose();
 	}
+
+
 }
 

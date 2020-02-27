@@ -16,11 +16,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 
+import java.sql.Time;
+
 
 public class Boo extends Personaje {
 
 
     private float posOriginal;
+    private int cont;
 
     public Boo(World w, String rutaTextura) {
         super(w, rutaTextura);
@@ -31,34 +34,23 @@ public class Boo extends Personaje {
     public Boo(World w, String rutaTextura, float x, float y) {
         super(w, rutaTextura, x, y);
         posOriginal = this.getCuerpo().getPosition().x;
+        cont = 0;
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
 
+        if(this.getCuerpo().getPosition().x>10){
+            this.getCuerpo().setLinearVelocity(-3,0);
+        }
+
     }
 
     public void patrullar() {
 
 
-        System.out.println("la equis de los cojones: "+);
-
-        /*if(this.getCuerpo().getPosition().x>10 && this.getCuerpo().getPosition().x<13 && ida == true){
-            this.getCuerpo().setLinearVelocity(3,0);
-        }
-        if(this.getCuerpo().getPosition().x>13){
-            ida = false;
-            this.getCuerpo().setLinearVelocity(-3,0);
-        }*/
-
-        if(this.getCuerpo().getPosition().x==posOriginal){
-            this.getCuerpo().setLinearVelocity(3,0);
-        }
-
-        if(this.getCuerpo().getPosition().x>20){
-            this.getCuerpo().setLinearVelocity(-3,0);
-        }
+        System.out.println("la equis de los cojones: "+this.getCuerpo().getPosition().x);
 
 
     }
