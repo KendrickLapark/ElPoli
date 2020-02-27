@@ -16,7 +16,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -29,6 +33,7 @@ import com.el.poli.actores.CellJr;
 import com.el.poli.actores.Vegeta;
 import com.el.poli.entradas.EscuchadorTeclado;
 import com.el.poli.objetos.Bola;
+import com.el.poli.objetos.Radar;
 
 public class Juego extends Game{
 
@@ -39,15 +44,17 @@ public class Juego extends Game{
 	private OrthogonalTiledMapRenderer renderer;
 	private Vegeta vegeta;
 	private Boo bubu;
-	private Bola bola1, bola2, bola3;
+	private Bola bola1, bola2, bola3, bola4, bola5, bola6, bola7;
+	private Radar radar;
 	//private CellJr cellJr;
+	private int bolas;
 	private Box2DDebugRenderer dbRenderer;
 	private static final float pixelsPorCuadro = 16f;
 	private EscuchadorTeclado teclado;
 
 	@Override
 	public void create() {
-
+		bolas = 0;
 		batch = new SpriteBatch();
 		world = new World(new Vector2(0,-9.8f),true);
 		vegeta = new Vegeta(world,"personajes/vegira.png",5,4);
@@ -58,6 +65,12 @@ public class Juego extends Game{
 		bola1 = new Bola(world, "bolas/1.png", 60, 10);
 		bola2 = new Bola(world, "bolas/2.png", 20,5);
 		bola3 = new Bola(world, "bolas/3.png", 25,5);
+		bola4= new Bola(world, "bolas/4.png", 45,5);
+		bola5 = new Bola(world, "bolas/5.png", 30,35);
+		bola6 = new Bola(world, "bolas/6.png", 60,45);
+		bola7 = new Bola(world, "bolas/7.png", 70,5);
+		radar = new Radar(world, "bolas/radar.png",10,20);
+
 		renderer = new OrthogonalTiledMapRenderer(mapa,1/pixelsPorCuadro);
 		this.dbRenderer = new Box2DDebugRenderer();
 		camara.position.x=vegeta.getX();
@@ -78,6 +91,43 @@ public class Juego extends Game{
 			rectanguloSuelo.createFixture(propiedadesFisicasRectangulo);
 		}
 
+
+
+		world.setContactListener(new ContactListener() {
+			@Override
+			public void beginContact(Contact contact) {
+				Gdx.app.log("Contacto comenzado!",contact.getFixtureA()+" : "+contact.getFixtureB());
+				Gdx.app.log("Es figura A vegeta?",(contact.getFixtureA().getBody()==vegeta.getCuerpo())+"");
+				Gdx.app.log("Es figura B bola?",(contact.getFixtureB().getBody()==bola1.getCuerpo())+"");
+				if(contact.getFixtureA().getBody()==vegeta.getCuerpo()&&
+						contact.getFixtureB().getBody()==bola1.getCuerpo()){
+					Gdx.app.log("Vegeta","Vegeta ha tocado la bola");
+				}
+				if(contact.getFixtureA().getBody()==vegeta.getCuerpo()&&
+						contact.getFixtureB().getBody()==bubu.getCuerpo()){
+					vegeta.getCuerpo().applyForceToCenter(100,200,true);
+					bolas++;
+					//baseDeDatos.guardar(puntuacion);
+					Gdx.app.log("Bolas recogidas:",bolas+"");
+				}
+			}
+
+			@Override
+			public void endContact(Contact contact) {
+
+			}
+
+			@Override
+			public void preSolve(Contact contact, Manifold oldManifold) {
+
+			}
+
+			@Override
+			public void postSolve(Contact contact, ContactImpulse impulse) {
+
+			}
+		});
+
 	}
 
 	@Override
@@ -96,6 +146,11 @@ public class Juego extends Game{
 		bola1.draw(batch,0);
 		bola2.draw(batch,0);
 		bola3.draw(batch,0);
+		bola4.draw(batch,0);
+		bola5.draw(batch,0);
+		bola6.draw(batch,0);
+		bola7.draw(batch,0);
+		radar.draw(batch,0);
 		//cellJr.draw(batch,0);
 		bubu.patrullar();
 
