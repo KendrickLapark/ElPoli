@@ -4,9 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -15,22 +14,51 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 
-import java.util.HashSet;
+import java.sql.Time;
 
-public class Vegeta extends Personaje {
 
-    private OrthographicCamera camara; //Cámara que renderiza al jugado
+public class Boo extends Personaje {
 
-    public Vegeta(World w, String rutaTextura) {
+
+    private float posOriginal;
+    private int cont;
+
+    public Boo(World w, String rutaTextura) {
         super(w, rutaTextura);
+
     }
 
-    public Vegeta(World w, String rutaTextura, float x, float y) {
+
+    public Boo(World w, String rutaTextura, float x, float y) {
         super(w, rutaTextura, x, y);
+        posOriginal = this.getCuerpo().getPosition().x;
+        cont = 0;
     }
 
-    public OrthographicCamera getCamara(){
-        return this.camara;
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+
+        if(this.getCuerpo().getPosition().x>10){
+            this.getCuerpo().setLinearVelocity(-3,0);
+        }
+
     }
+
+    public void patrullar() {
+
+
+        System.out.println("la equis de los cojones: "+this.getCuerpo().getPosition().x);
+
+
+    }
+
+
+
+
+
 }
+
+
