@@ -8,6 +8,7 @@ import com.el.poli.pantallas.PantallaJuego;
 public class Juego extends Game {
 
 
+
     public SpriteBatch batch;
 
     @Override
@@ -18,7 +19,7 @@ public class Juego extends Game {
     }
 
     @Override
-    public void dispose () {
+    public void render () {
         super.render();
     }
 

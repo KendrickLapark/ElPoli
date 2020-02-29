@@ -1,36 +1,45 @@
 package com.el.poli.actores;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.el.poli.pantallas.PantallaJuego;
 
-import java.util.HashSet;
+public class Vegeta extends Actor {
 
-public class Vegeta extends Personaje {
+    public World world;
+    public Body body;
+    public Sprite sprite;
 
-    private OrthographicCamera camara; //Cámara que renderiza al jugado
+    public Vegeta(World w){
+        this.world = w;
+        BodyDef bDef = new BodyDef();
 
-    public Vegeta(World w, String rutaTextura) {
-        super(w, rutaTextura);
+        sprite = new Sprite(new Texture("personajes/vegira.png"));
+
+        bDef.position.set(32,32);
+        bDef.type = BodyDef.BodyType.DynamicBody;
+        body = world.createBody(bDef);
+
+        FixtureDef fixDef = new FixtureDef();
+        CircleShape shape = new CircleShape();
+        shape.setRadius(5) ;
+
+        fixDef.shape = shape;
+        sprite.setBounds(this.body.getPosition().x/2,this.body.getPosition().y/2,1,1);
+        body.createFixture(fixDef);
+
+
     }
 
-    public Vegeta(World w, String rutaTextura, float x, float y) {
-        super(w, rutaTextura, x, y);
-    }
-
-    public OrthographicCamera getCamara(){
-        return this.camara;
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
     }
 }
