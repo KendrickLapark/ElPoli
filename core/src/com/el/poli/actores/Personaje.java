@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.el.poli.objetos.ObjetoJuego;
 
 import java.util.HashSet;
 
@@ -30,6 +32,7 @@ public abstract class Personaje extends Actor {
     private Vegeta vegeta;
     private int velocidad;
     private HashSet<Integer> moving;
+    private boolean colision;
 
     public Personaje(World w, String rutaTextura){
 
@@ -104,6 +107,22 @@ public abstract class Personaje extends Actor {
     public void seguir(OrthographicCamera camara){
         camara.position.x=this.cuerpo.getPosition().x;
         camara.position.y=this.cuerpo.getPosition().y;
+    }
+
+    public boolean compruebaColision(ObjetoJuego c){
+        boolean overlaps=getHitBox().overlaps(c.getHitBox());
+        if(overlaps&&colision==false){
+            colision=true;
+            Gdx.app.log("Colisionando","con "+c.getClass().getName());
+        }else if(!overlaps){
+            colision=false;
+        }
+        return colision;
+    }
+
+
+    public Rectangle getHitBox(){
+        return sprite.getBoundingRectangle();
     }
 
 

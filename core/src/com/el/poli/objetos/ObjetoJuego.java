@@ -1,23 +1,27 @@
 package com.el.poli.objetos;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public abstract class ObjetoJuego {
+public abstract class ObjetoJuego extends Actor {
 
     protected Sprite sprite;
     private World mundo;
     private BodyDef propiedadesCuerpo;
     private Body cuerpo;
     private FixtureDef propiedadesFisicasCuerpo;
+    private boolean colision;
 
 
     public ObjetoJuego (World m,String ruta, float x, float y){
@@ -47,6 +51,10 @@ public abstract class ObjetoJuego {
 
     }
 
+    public Rectangle getHitBox(){
+        return sprite.getBoundingRectangle();
+    }
+
 
     public void draw(Batch batch, float parentAlpha) {
         //Esta cuenta hace falta por lo de la media altura. Ese absurdo cálculo...
@@ -73,4 +81,18 @@ public abstract class ObjetoJuego {
         camara.position.x=this.cuerpo.getPosition().x;
         camara.position.y=this.cuerpo.getPosition().y;
     }
+
+
+
+    public boolean compruebaColision(ObjetoJuego c){
+        boolean overlaps=getHitBox().overlaps(c.getHitBox());
+        if(overlaps&&colision==false){
+            colision=true;
+            Gdx.app.log("Colisionando","con "+c.getClass().getName());
+        }else if(!overlaps){
+            colision=false;
+        }
+        return colision;
+    }
+
 }

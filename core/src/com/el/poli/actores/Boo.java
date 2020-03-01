@@ -50,7 +50,7 @@ public class Boo extends Personaje {
     public void patrullar() {
 
 
-        System.out.println("la equis de los cojones: "+this.getCuerpo().getPosition().x);
+        //System.out.println("la equis de boo: "+this.getCuerpo().getPosition().x);
 
 
     }

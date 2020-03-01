@@ -28,12 +28,15 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.el.poli.actores.Boo;
 import com.el.poli.actores.CellJr;
 import com.el.poli.actores.Vegeta;
 import com.el.poli.entradas.EscuchadorTeclado;
 import com.el.poli.objetos.Bola;
 import com.el.poli.objetos.Radar;
+
+import java.util.ArrayList;
 
 public class Juego extends Game{
 
@@ -47,20 +50,27 @@ public class Juego extends Game{
 	private Bola bola1, bola2, bola3, bola4, bola5, bola6, bola7;
 	private Radar radar;
 	//private CellJr cellJr;
-	private int bolas;
+	private int bolas,contRadar;
 	private Box2DDebugRenderer dbRenderer;
 	private static final float pixelsPorCuadro = 16f;
 	private EscuchadorTeclado teclado;
+	private ArrayList<Bola>listBolas;
+	private boolean poseeRadar;
+
+	private Viewport vp;
 
 	@Override
 	public void create() {
 		bolas = 0;
+		contRadar = 0;
+
+		listBolas = new ArrayList<>();
 		batch = new SpriteBatch();
 		world = new World(new Vector2(0,-9.8f),true);
 		vegeta = new Vegeta(world,"personajes/vegira.png",5,4);
 		bubu = new Boo(world, "personajes/boo.png",10,2);
 		//cellJr = new CellJr(world,"personajes/celljr.png", 9,2);
-		camara = new OrthographicCamera(10,10);
+		camara = new OrthographicCamera(20,20);
 		mapa = new TmxMapLoader().load("mapa/mapa1.tmx");
 		bola1 = new Bola(world, "bolas/1.png", 60, 10);
 		bola2 = new Bola(world, "bolas/2.png", 20,5);
@@ -69,13 +79,20 @@ public class Juego extends Game{
 		bola5 = new Bola(world, "bolas/5.png", 30,35);
 		bola6 = new Bola(world, "bolas/6.png", 60,45);
 		bola7 = new Bola(world, "bolas/7.png", 70,5);
+		listBolas.add(bola1);
+		listBolas.add(bola2);
+		listBolas.add(bola3);
+		listBolas.add(bola4);
+		listBolas.add(bola5);
+		listBolas.add(bola6);
+		listBolas.add(bola7);
 		radar = new Radar(world, "bolas/radar.png",10,20);
 
 		renderer = new OrthogonalTiledMapRenderer(mapa,1/pixelsPorCuadro);
 		this.dbRenderer = new Box2DDebugRenderer();
-		camara.position.x=vegeta.getX();
-		camara.position.y= vegeta.getY();
-		//camara.zoom=8f;
+		camara.position.x=vegeta.getX()+10;
+		camara.position.y= vegeta.getY()+10;
+		camara.zoom=1.5f;
 		teclado = new EscuchadorTeclado(vegeta);
 		Gdx.input.setInputProcessor(teclado);
 
@@ -141,16 +158,22 @@ public class Juego extends Game{
 		renderer.render();
 		batch.setProjectionMatrix(camara.combined);
 		batch.begin();
+
 		vegeta.draw(batch,0);
 		bubu.draw(batch,0);
-		bola1.draw(batch,0);
-		bola2.draw(batch,0);
-		bola3.draw(batch,0);
-		bola4.draw(batch,0);
-		bola5.draw(batch,0);
-		bola6.draw(batch,0);
-		bola7.draw(batch,0);
-		radar.draw(batch,0);
+
+
+		if(!vegeta.compruebaColision(radar)&&contRadar==0){
+			radar.draw(batch,0);
+
+		}else{
+			contRadar++;
+		}
+
+		if(contRadar>0){
+			dibujaBolas();
+		}
+
 		//cellJr.draw(batch,0);
 		bubu.patrullar();
 
@@ -173,6 +196,12 @@ public class Juego extends Game{
 		renderer.dispose();
 		this.batch.dispose();
 		this.dbRenderer.dispose();
+	}
+
+	public void dibujaBolas(){
+		for(Bola b : listBolas){
+			b.draw(batch,0);
+		}
 	}
 
 
