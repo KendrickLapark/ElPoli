@@ -3,9 +3,12 @@ package com.el.poli;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -50,19 +53,25 @@ public class Juego extends Game{
 	private Bola bola1, bola2, bola3, bola4, bola5, bola6, bola7;
 	private Radar radar;
 	//private CellJr cellJr;
-	private int bolas,contRadar;
+	private int bolas, contBolas;
 	private Box2DDebugRenderer dbRenderer;
 	private static final float pixelsPorCuadro = 16f;
 	private EscuchadorTeclado teclado;
 	private ArrayList<Bola>listBolas;
-	private boolean poseeRadar;
+	private boolean poseeRadar, bBola1;
+
+
+	private SpriteBatch batchTexto;
+	private BitmapFont bitmapafuente;
+
 
 	private Viewport vp;
 
 	@Override
 	public void create() {
 		bolas = 0;
-		contRadar = 0;
+		contBolas = 0;
+		batchTexto = new SpriteBatch();
 
 		listBolas = new ArrayList<>();
 		batch = new SpriteBatch();
@@ -92,7 +101,7 @@ public class Juego extends Game{
 		this.dbRenderer = new Box2DDebugRenderer();
 		camara.position.x=vegeta.getX()+10;
 		camara.position.y= vegeta.getY()+10;
-		camara.zoom=1.5f;
+		//camara.zoom=1.5f;
 		teclado = new EscuchadorTeclado(vegeta);
 		Gdx.input.setInputProcessor(teclado);
 
@@ -162,25 +171,36 @@ public class Juego extends Game{
 		vegeta.draw(batch,0);
 		bubu.draw(batch,0);
 
-		if(contRadar==0){
-			if(!vegeta.compruebaColision(radar)){
-				radar.draw(batch,0);
 
-			}else{
-				contRadar++;
-				radar = null;
+		if(!poseeRadar){
+			radar.draw(batch,0);
+			if(vegeta.compruebaColision(radar)){
+				radar.dispose();
+				poseeRadar = true;
 			}
-
-
-		}else if(contRadar>0){
+		}else{
 			dibujaBolas();
 		}
+
+
 
 
 		//cellJr.draw(batch,0);
 		bubu.patrullar();
 
 		batch.end();
+
+		batchTexto.begin();
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fuente/impact.ttf"));
+		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		parameter.size = 16;
+		parameter.borderColor=new Color(444f,0.4f,0,1);
+		parameter.borderWidth=1f;
+		parameter.incremental=true;
+		bitmapafuente = generator.generateFont(parameter);
+		bitmapafuente.draw(batchTexto, "Puntos: " + contBolas, Gdx.graphics.getHeight() / 30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), -1, false);
+		batchTexto.end();
+
 		camara.update();
 		dbRenderer.render(world,camara.combined);
 	}
@@ -205,6 +225,10 @@ public class Juego extends Game{
 		for(Bola b : listBolas){
 			b.draw(batch,0);
 		}
+	}
+
+	public void dibujaBola(Bola b){
+		b.draw(batch,0);
 	}
 
 

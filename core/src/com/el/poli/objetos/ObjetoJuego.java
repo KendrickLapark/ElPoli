@@ -95,4 +95,9 @@ public abstract class ObjetoJuego extends Actor {
         return colision;
     }
 
+   public void dispose(){
+        this.cuerpo=null;
+        this.sprite=null;
+   }
+
 }
