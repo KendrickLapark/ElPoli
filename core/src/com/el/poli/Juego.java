@@ -162,17 +162,20 @@ public class Juego extends Game{
 		vegeta.draw(batch,0);
 		bubu.draw(batch,0);
 
+		if(contRadar==0){
+			if(!vegeta.compruebaColision(radar)){
+				radar.draw(batch,0);
 
-		if(!vegeta.compruebaColision(radar)&&contRadar==0){
-			radar.draw(batch,0);
+			}else{
+				contRadar++;
+				radar = null;
+			}
 
-		}else{
-			contRadar++;
-		}
 
-		if(contRadar>0){
+		}else if(contRadar>0){
 			dibujaBolas();
 		}
+
 
 		//cellJr.draw(batch,0);
 		bubu.patrullar();
