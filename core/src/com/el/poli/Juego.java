@@ -58,7 +58,7 @@ public class Juego extends Game{
 	private static final float pixelsPorCuadro = 16f;
 	private EscuchadorTeclado teclado;
 	private ArrayList<Bola>listBolas;
-	private boolean poseeRadar, bBola1;
+	private boolean poseeRadar, pBola2;
 
 
 	private SpriteBatch batchTexto;
@@ -82,7 +82,7 @@ public class Juego extends Game{
 		camara = new OrthographicCamera(20,20);
 		mapa = new TmxMapLoader().load("mapa/mapa1.tmx");
 		bola1 = new Bola(world, "bolas/1.png", 60, 10);
-		bola2 = new Bola(world, "bolas/2.png", 20,5);
+		bola2 = new Bola(world, "bolas/2.png", 10,5);
 		bola3 = new Bola(world, "bolas/3.png", 25,5);
 		bola4= new Bola(world, "bolas/4.png", 45,5);
 		bola5 = new Bola(world, "bolas/5.png", 30,35);
@@ -171,17 +171,55 @@ public class Juego extends Game{
 		vegeta.draw(batch,0);
 		bubu.draw(batch,0);
 
-
-		if(!poseeRadar){
+		if(!poseeRadar) {
 			radar.draw(batch,0);
-			if(vegeta.compruebaColision(radar)){
-				radar.dispose();
+			if (vegeta.compruebaColision(radar)) {
 				poseeRadar = true;
+				world.destroyBody(radar.getCuerpo());
 			}
 		}else{
-			dibujaBolas();
-		}
 
+			for(Bola b : listBolas){
+				b.draw(batch,0);
+			}
+
+			if(vegeta.compruebaColision(bola2)) {
+				listBolas.remove(bola2);
+				world.destroyBody(bola2.getCuerpo());
+			}
+
+			if(vegeta.compruebaColision(bola1)){
+				listBolas.remove(bola1);
+				world.destroyBody(bola1.getCuerpo());
+			}
+
+			if(vegeta.compruebaColision(bola3)) {
+				listBolas.remove(bola3);
+				world.destroyBody(bola3.getCuerpo());
+			}
+
+			if(vegeta.compruebaColision(bola4)){
+				listBolas.remove(bola4);
+				world.destroyBody(bola4.getCuerpo());
+			}
+
+			if(vegeta.compruebaColision(bola5)) {
+				listBolas.remove(bola5);
+				world.destroyBody(bola5.getCuerpo());
+			}
+
+			if(vegeta.compruebaColision(bola6)){
+				listBolas.remove(bola6);
+				world.destroyBody(bola6.getCuerpo());
+			}
+
+			if(vegeta.compruebaColision(bola7)) {
+				listBolas.remove(bola7);
+				world.destroyBody(bola7.getCuerpo());
+			}
+
+
+		}
 
 
 
@@ -218,6 +256,7 @@ public class Juego extends Game{
 		world.dispose();
 		renderer.dispose();
 		this.batch.dispose();
+		this.batchTexto.dispose();
 		this.dbRenderer.dispose();
 	}
 
@@ -230,6 +269,8 @@ public class Juego extends Game{
 	public void dibujaBola(Bola b){
 		b.draw(batch,0);
 	}
+
+
 
 
 }

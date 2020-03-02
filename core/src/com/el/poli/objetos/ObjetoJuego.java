@@ -96,7 +96,6 @@ public abstract class ObjetoJuego extends Actor {
     }
 
    public void dispose(){
-        this.cuerpo=null;
         this.sprite=null;
    }
 
