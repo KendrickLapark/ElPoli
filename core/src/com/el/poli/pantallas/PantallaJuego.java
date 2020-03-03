@@ -3,6 +3,7 @@ package com.el.poli.pantallas;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -60,6 +61,7 @@ public class PantallaJuego implements Screen {
     private EscuchadorTeclado teclado;
     private ArrayList<Bola>listBolas;
     private boolean poseeRadar,poseeManzana;
+    private Sound sound;
 
     private SpriteBatch batchTexto;
     private BitmapFont bitmapafuente;
@@ -72,6 +74,8 @@ public class PantallaJuego implements Screen {
         contBolas = 0;
         vidas = 5;
         batchTexto = new SpriteBatch();
+        sound = Gdx.audio.newSound(Gdx.files.internal("musica/dbz.mp3"));
+        sound.play(3f);
         vp = new FitViewport(1400,700,camara);
 
         listBolas = new ArrayList<>();
@@ -281,6 +285,7 @@ public class PantallaJuego implements Screen {
     public void dispose() {
         renderer.dispose();
         world.dispose();
+        sound.dispose();
         batch.dispose();
         batchTexto.dispose();
 

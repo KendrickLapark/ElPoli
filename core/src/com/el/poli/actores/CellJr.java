@@ -14,7 +14,6 @@ public class CellJr extends Personaje {
         super(w, rutaTextura);
     }
 
-
     /*
     Constructor de CellJr con 4 parámetros, el mundo del juego, el nombre de la ruta de la textura, la posicion en el eje x y la posicion en el eje y
      */
@@ -26,12 +25,11 @@ public class CellJr extends Personaje {
     /*
     Método patrullar para que CellJr se mueva de un punto a otro del mapa en el eje x
      */
-
     public void patrullar() {
 
         System.out.println("la equis de CellJr: "+this.getCuerpo().getPosition().x+" Ida: "+ida);
 
-        if(this.getCuerpo().getPosition().x<this.getCuerpo().getPosition().x+10 && ida == true){
+        if(this.getCuerpo().getPosition().x<20 && ida == true){
             this.getCuerpo().setLinearVelocity(3,0);
         }else{
             ida = false;
