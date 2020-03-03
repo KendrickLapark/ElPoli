@@ -1,6 +1,7 @@
 package com.el.poli.pantallas;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -98,8 +99,8 @@ public class PantallaJuego implements Screen {
         camara.position.x=vegeta.getX()+10;
         camara.position.y= vegeta.getY()+10;
         //camara.zoom=1.5f;
-        teclado = new EscuchadorTeclado(vegeta);
-        Gdx.input.setInputProcessor(teclado);
+        /*teclado = new EscuchadorTeclado(vegeta);
+        Gdx.input.setInputProcessor(teclado);*/
 
 
         for (MapObject objeto:mapa.getLayers().get("suelo").getObjects()){
@@ -159,6 +160,7 @@ public class PantallaJuego implements Screen {
 
     @Override
     public void render(float delta) {
+        actualizar(delta);
         Gdx.gl.glClearColor(0, 0, 0f, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
@@ -349,5 +351,28 @@ public class PantallaJuego implements Screen {
 
     public void dibujaBola(Bola b){
         b.draw(batch,0);
+    }
+
+    public void entrada(float delta){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)&& vegeta.getCuerpo().getPosition().y<4){
+            vegeta.getCuerpo().applyLinearImpulse(new Vector2(0,10), vegeta.getCuerpo().getWorldCenter(),true);
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && vegeta.getCuerpo().getLinearVelocity().x <=2){
+            vegeta.getCuerpo().applyLinearImpulse(new Vector2(5,0), vegeta.getCuerpo().getWorldCenter(),true);
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && vegeta.getCuerpo().getLinearVelocity().x <=2){
+            vegeta.getCuerpo().applyLinearImpulse(new Vector2(-5,0), vegeta.getCuerpo().getWorldCenter(),true);
+        }
+
+    }
+
+    public void actualizar(float delta){
+        entrada(delta);
+
+        world.step(1/60f,6,2);
+        camara.update();
+        renderer.setView(camara);
     }
 }
