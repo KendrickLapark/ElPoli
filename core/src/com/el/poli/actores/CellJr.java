@@ -31,7 +31,7 @@ public class CellJr extends Personaje {
 
         System.out.println("la equis de CellJr: "+this.getCuerpo().getPosition().x+" Ida: "+ida);
 
-        if(this.getCuerpo().getPosition().x<20 && ida == true){
+        if(this.getCuerpo().getPosition().x<this.getCuerpo().getPosition().x+10 && ida == true){
             this.getCuerpo().setLinearVelocity(3,0);
         }else{
             ida = false;

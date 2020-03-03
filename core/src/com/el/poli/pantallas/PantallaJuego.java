@@ -27,6 +27,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.el.poli.Juego;
 import com.el.poli.actores.Boo;
@@ -34,6 +35,7 @@ import com.el.poli.actores.CellJr;
 import com.el.poli.actores.Vegeta;
 import com.el.poli.entradas.EscuchadorTeclado;
 import com.el.poli.objetos.Bola;
+import com.el.poli.objetos.Manzana;
 import com.el.poli.objetos.Radar;
 
 import java.util.ArrayList;
@@ -50,13 +52,14 @@ public class PantallaJuego implements Screen {
     private Boo bubu;
     private Bola bola1, bola2, bola3, bola4, bola5, bola6, bola7;
     private Radar radar;
+    private Manzana manzana;
     private CellJr cellJr;
     private int bolas, contBolas, vidas;
     private Box2DDebugRenderer dbRenderer;
     private static final float pixelsPorCuadro = 16f;
     private EscuchadorTeclado teclado;
     private ArrayList<Bola>listBolas;
-    private boolean poseeRadar;
+    private boolean poseeRadar,poseeManzana;
 
     private SpriteBatch batchTexto;
     private BitmapFont bitmapafuente;
@@ -69,6 +72,7 @@ public class PantallaJuego implements Screen {
         contBolas = 0;
         vidas = 5;
         batchTexto = new SpriteBatch();
+        vp = new FitViewport(1400,700,camara);
 
         listBolas = new ArrayList<>();
         batch = new SpriteBatch();
@@ -85,6 +89,7 @@ public class PantallaJuego implements Screen {
         bola5 = new Bola(world, "bolas/5.png", 30,35);
         bola6 = new Bola(world, "bolas/6.png", 62,17);
         bola7 = new Bola(world, "bolas/7.png", 156,6);
+        manzana = new Manzana(world, "objetos/manzana.png",11,5);
         listBolas.add(bola1);
         listBolas.add(bola2);
         listBolas.add(bola3);
@@ -98,7 +103,7 @@ public class PantallaJuego implements Screen {
         this.dbRenderer = new Box2DDebugRenderer();
         camara.position.x=vegeta.getX()+10;
         camara.position.y= vegeta.getY()+10;
-        camara.zoom=1.5f;
+        //camara.zoom=1.5f;
         /*teclado = new EscuchadorTeclado(vegeta);
         Gdx.input.setInputProcessor(teclado);*/
 
@@ -216,6 +221,20 @@ public class PantallaJuego implements Screen {
 
         }
 
+        if(vegeta.compruebaColision(manzana)){
+            poseeManzana = true;
+        }
+
+        System.out.println(poseeManzana+"?laposee?");
+
+        if(!poseeManzana){
+            manzana.draw(batch,0);
+        }
+
+        if(vidas == 0){
+            System.exit(0);
+        }
+
         System.out.println("La x de vegeta: "+vegeta.getCuerpo().getPosition().x+" La y de vegeta: "+vegeta.getCuerpo().getPosition().y);
 
         bubu.patrullar();
@@ -260,12 +279,10 @@ public class PantallaJuego implements Screen {
 
     @Override
     public void dispose() {
-        Gdx.gl.glClearColor(0, 0, 0f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
-        vegeta.seguir(camara);
-        renderer.setView(camara);
-        renderer.render();
+        renderer.dispose();
+        world.dispose();
+        batch.dispose();
+        batchTexto.dispose();
 
     }
 
@@ -281,23 +298,39 @@ public class PantallaJuego implements Screen {
         b.draw(batch,0);
     }
 
-    public void entrada(float delta){
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
-            vegeta.getCuerpo().applyLinearImpulse(new Vector2(0,20), vegeta.getCuerpo().getWorldCenter(),true);
-        }
+    public void entrada(float delta, boolean poseeManzana){
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && vegeta.getCuerpo().getLinearVelocity().x <=2){
-            vegeta.getCuerpo().applyLinearImpulse(new Vector2(15,0), vegeta.getCuerpo().getWorldCenter(),true);
-        }
+        if(!poseeManzana) {
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && vegeta.getCuerpo().getLinearVelocity().x <=2){
-            vegeta.getCuerpo().applyLinearImpulse(new Vector2(-15,0), vegeta.getCuerpo().getWorldCenter(),true);
-        }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && vegeta.getCuerpo().getLinearVelocity().y==0) {
+                vegeta.getCuerpo().applyLinearImpulse(new Vector2(0, 10), vegeta.getCuerpo().getWorldCenter(), true);
+            }
 
+            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && vegeta.getCuerpo().getLinearVelocity().x <= 2) {
+                vegeta.getCuerpo().applyLinearImpulse(new Vector2(5, 0), vegeta.getCuerpo().getWorldCenter(), true);
+            }
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && vegeta.getCuerpo().getLinearVelocity().x >= 0) {
+                vegeta.getCuerpo().applyLinearImpulse(new Vector2(-5, 0), vegeta.getCuerpo().getWorldCenter(), true);
+            }
+        }else{
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                vegeta.getCuerpo().applyLinearImpulse(new Vector2(0, 10), vegeta.getCuerpo().getWorldCenter(), true);
+            }
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && vegeta.getCuerpo().getLinearVelocity().x <= 2) {
+                vegeta.getCuerpo().applyLinearImpulse(new Vector2(30, 0), vegeta.getCuerpo().getWorldCenter(), true);
+            }
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && vegeta.getCuerpo().getLinearVelocity().x >= 0) {
+                vegeta.getCuerpo().applyLinearImpulse(new Vector2(-30, 0), vegeta.getCuerpo().getWorldCenter(), true);
+            }
+        }
     }
 
     public void actualizar(float delta){
-        entrada(delta);
+        entrada(delta,poseeManzana);
 
         world.step(1/60f,6,2);
         camara.update();
