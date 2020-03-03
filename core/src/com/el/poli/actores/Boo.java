@@ -21,7 +21,6 @@ import java.sql.Time;
 
 public class Boo extends Personaje {
 
-
     private float posOriginal;
     private int cont;
     private boolean ida;
@@ -30,7 +29,6 @@ public class Boo extends Personaje {
         super(w, rutaTextura);
 
     }
-
 
     public Boo(World w, String rutaTextura, float x, float y) {
         super(w, rutaTextura, x, y);
@@ -50,29 +48,21 @@ public class Boo extends Personaje {
 
     public void patrullar() {
 
-
         System.out.println("la equis de boo: "+this.getCuerpo().getPosition().x+" Ida: "+ida);
 
-        if(this.getCuerpo().getPosition().x<20 && ida == true){
+        if(this.getCuerpo().getPosition().x<150 && ida == true){
             this.getCuerpo().setLinearVelocity(3,0);
         }else{
             ida = false;
         }
 
-        if(this.getCuerpo().getPosition().x>9 && ida == false){
+        if(this.getCuerpo().getPosition().x>140 && ida == false){
             this.getCuerpo().setLinearVelocity(-3,0);
         }else{
             ida = true;
         }
 
-
-
-
     }
-
-
-
-
 
 }
 

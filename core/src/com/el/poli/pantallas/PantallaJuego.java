@@ -30,6 +30,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.el.poli.Juego;
 import com.el.poli.actores.Boo;
+import com.el.poli.actores.CellJr;
 import com.el.poli.actores.Vegeta;
 import com.el.poli.entradas.EscuchadorTeclado;
 import com.el.poli.objetos.Bola;
@@ -49,18 +50,16 @@ public class PantallaJuego implements Screen {
     private Boo bubu;
     private Bola bola1, bola2, bola3, bola4, bola5, bola6, bola7;
     private Radar radar;
-    //private CellJr cellJr;
-    private int bolas, contBolas;
+    private CellJr cellJr;
+    private int bolas, contBolas, vidas;
     private Box2DDebugRenderer dbRenderer;
     private static final float pixelsPorCuadro = 16f;
     private EscuchadorTeclado teclado;
     private ArrayList<Bola>listBolas;
-    private boolean poseeRadar, pBola2;
-
+    private boolean poseeRadar;
 
     private SpriteBatch batchTexto;
     private BitmapFont bitmapafuente;
-
 
     private Viewport vp;
 
@@ -68,23 +67,24 @@ public class PantallaJuego implements Screen {
         this.juego = j;
         bolas = 0;
         contBolas = 0;
+        vidas = 5;
         batchTexto = new SpriteBatch();
 
         listBolas = new ArrayList<>();
         batch = new SpriteBatch();
         world = new World(new Vector2(0,-9.8f),true);
         vegeta = new Vegeta(world,"personajes/vegira.png",5,4);
-        bubu = new Boo(world, "personajes/boo.png",10,2);
-        //cellJr = new CellJr(world,"personajes/celljr.png", 9,2);
+        bubu = new Boo(world, "personajes/boo.png",139,2);
+        cellJr = new CellJr(world,"personajes/celljr.png", 10,2);
         camara = new OrthographicCamera(20,20);
         mapa = new TmxMapLoader().load("mapa/mapa1.tmx");
-        bola1 = new Bola(world, "bolas/1.png", 60, 10);
-        bola2 = new Bola(world, "bolas/2.png", 10,5);
-        bola3 = new Bola(world, "bolas/3.png", 25,5);
-        bola4= new Bola(world, "bolas/4.png", 45,5);
+        bola1 = new Bola(world, "bolas/1.png", 156, 32);
+        bola2 = new Bola(world, "bolas/2.png", 97,25);
+        bola3 = new Bola(world, "bolas/3.png", 15,5);
+        bola4= new Bola(world, "bolas/4.png", 110,6);
         bola5 = new Bola(world, "bolas/5.png", 30,35);
-        bola6 = new Bola(world, "bolas/6.png", 60,45);
-        bola7 = new Bola(world, "bolas/7.png", 70,5);
+        bola6 = new Bola(world, "bolas/6.png", 62,17);
+        bola7 = new Bola(world, "bolas/7.png", 156,6);
         listBolas.add(bola1);
         listBolas.add(bola2);
         listBolas.add(bola3);
@@ -92,13 +92,13 @@ public class PantallaJuego implements Screen {
         listBolas.add(bola5);
         listBolas.add(bola6);
         listBolas.add(bola7);
-        radar = new Radar(world, "bolas/radar.png",150,5);
+        radar = new Radar(world, "bolas/radar.png",150,5);  //150, 5 coordenadas iniciales
 
         renderer = new OrthogonalTiledMapRenderer(mapa,1/pixelsPorCuadro);
         this.dbRenderer = new Box2DDebugRenderer();
         camara.position.x=vegeta.getX()+10;
         camara.position.y= vegeta.getY()+10;
-        //camara.zoom=1.5f;
+        camara.zoom=1.5f;
         /*teclado = new EscuchadorTeclado(vegeta);
         Gdx.input.setInputProcessor(teclado);*/
 
@@ -127,9 +127,9 @@ public class PantallaJuego implements Screen {
                     Gdx.app.log("Vegeta","Vegeta ha tocado la bola");
                 }
                 if(contact.getFixtureA().getBody()==vegeta.getCuerpo()&&
-                        contact.getFixtureB().getBody()==bubu.getCuerpo()){
+                        contact.getFixtureB().getBody()==cellJr.getCuerpo()){
                     vegeta.getCuerpo().applyForceToCenter(100,200,true);
-                    bolas++;
+                    vegeta.setVidas(vidas--);
                     //baseDeDatos.guardar(puntuacion);
                     Gdx.app.log("Bolas recogidas:",bolas+"");
                 }
@@ -161,7 +161,7 @@ public class PantallaJuego implements Screen {
     @Override
     public void render(float delta) {
         actualizar(delta);
-        Gdx.gl.glClearColor(0, 0, 0f, 0);
+        Gdx.gl.glClearColor(0, 0, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         vegeta.seguir(camara);
@@ -172,6 +172,7 @@ public class PantallaJuego implements Screen {
 
         vegeta.draw(batch,0);
         bubu.draw(batch,0);
+        cellJr.draw(batch,0);
 
         if(!poseeRadar) {
             radar.draw(batch,0);
@@ -213,15 +214,12 @@ public class PantallaJuego implements Screen {
                 listBolas.remove(bola7);
             }
 
-
-
-
         }
 
         System.out.println("La x de vegeta: "+vegeta.getCuerpo().getPosition().x+" La y de vegeta: "+vegeta.getCuerpo().getPosition().y);
 
-        //cellJr.draw(batch,0);
         bubu.patrullar();
+        cellJr.patrullar();
 
         batch.end();
 
@@ -233,7 +231,7 @@ public class PantallaJuego implements Screen {
         parameter.borderWidth=1f;
         parameter.incremental=true;
         bitmapafuente = generator.generateFont(parameter);
-        bitmapafuente.draw(batchTexto, "Puntos: " + contBolas, Gdx.graphics.getHeight() / 30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), -1, false);
+        bitmapafuente.draw(batchTexto, "Vidas: " + vidas, Gdx.graphics.getHeight() / 30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), -1, false);
         batchTexto.end();
 
         camara.update();
@@ -262,83 +260,13 @@ public class PantallaJuego implements Screen {
 
     @Override
     public void dispose() {
-        Gdx.gl.glClearColor(0, 0, 0f, 0);
+        Gdx.gl.glClearColor(0, 0, 0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         vegeta.seguir(camara);
         renderer.setView(camara);
         renderer.render();
-        batch.setProjectionMatrix(camara.combined);
-        batch.begin();
 
-        vegeta.draw(batch,0);
-        bubu.draw(batch,0);
-
-        if(!poseeRadar) {
-            radar.draw(batch,0);
-            if (vegeta.compruebaColision(radar)) {
-                poseeRadar = true;
-                world.destroyBody(radar.getCuerpo());
-            }
-        }else{
-
-            for(Bola b : listBolas){
-                b.draw(batch,0);
-            }
-
-            if(vegeta.compruebaColision(bola2)) {
-                listBolas.remove(bola2);
-            }
-
-            if(vegeta.compruebaColision(bola1)){
-                listBolas.remove(bola1);
-            }
-
-            if(vegeta.compruebaColision(bola3)) {
-                listBolas.remove(bola3);
-            }
-
-            if(vegeta.compruebaColision(bola4)){
-                listBolas.remove(bola4);
-            }
-
-            if(vegeta.compruebaColision(bola5)) {
-                listBolas.remove(bola5);
-            }
-
-            if(vegeta.compruebaColision(bola6)){
-                listBolas.remove(bola6);
-            }
-
-            if(vegeta.compruebaColision(bola7)) {
-                listBolas.remove(bola7);
-            }
-
-
-
-
-        }
-
-        System.out.println("La x de vegeta: "+vegeta.getCuerpo().getPosition().x+" La y de vegeta: "+vegeta.getCuerpo().getPosition().y);
-
-        //cellJr.draw(batch,0);
-        bubu.patrullar();
-
-        batch.end();
-
-        batchTexto.begin();
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fuente/impact.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 16;
-        parameter.borderColor=new Color(444f,0.4f,0,1);
-        parameter.borderWidth=1f;
-        parameter.incremental=true;
-        bitmapafuente = generator.generateFont(parameter);
-        bitmapafuente.draw(batchTexto, "Puntos: " + contBolas, Gdx.graphics.getHeight() / 30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), -1, false);
-        batchTexto.end();
-
-        camara.update();
-        dbRenderer.render(world,camara.combined);
     }
 
     private static PolygonShape getRectangle(RectangleMapObject rectangleObject) {
@@ -354,16 +282,16 @@ public class PantallaJuego implements Screen {
     }
 
     public void entrada(float delta){
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)&& vegeta.getCuerpo().getPosition().y<4){
-            vegeta.getCuerpo().applyLinearImpulse(new Vector2(0,10), vegeta.getCuerpo().getWorldCenter(),true);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
+            vegeta.getCuerpo().applyLinearImpulse(new Vector2(0,20), vegeta.getCuerpo().getWorldCenter(),true);
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && vegeta.getCuerpo().getLinearVelocity().x <=2){
-            vegeta.getCuerpo().applyLinearImpulse(new Vector2(5,0), vegeta.getCuerpo().getWorldCenter(),true);
+            vegeta.getCuerpo().applyLinearImpulse(new Vector2(15,0), vegeta.getCuerpo().getWorldCenter(),true);
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && vegeta.getCuerpo().getLinearVelocity().x <=2){
-            vegeta.getCuerpo().applyLinearImpulse(new Vector2(-5,0), vegeta.getCuerpo().getWorldCenter(),true);
+            vegeta.getCuerpo().applyLinearImpulse(new Vector2(-15,0), vegeta.getCuerpo().getWorldCenter(),true);
         }
 
     }
