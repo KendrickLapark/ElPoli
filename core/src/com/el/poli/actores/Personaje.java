@@ -73,23 +73,7 @@ public abstract class Personaje extends Actor {
         int anchuraSprite = 1; //Anchura y altura se expresan ahora en metros
         int alturaSprite = 1;//Anchura y altura se expresan ahora en metros
         sprite.setBounds(x, y,alturaSprite * 2, anchuraSprite * 2); // determinamos la posición inicial y la dimensión del sprite del personaje
-
-
-        this.propiedadesCuerpo = new BodyDef(); //Establecemos las propiedades del cuerpo
-        propiedadesCuerpo.type = BodyDef.BodyType.DynamicBody; // Establecemos el tipo de cuerpo del personaje como dinámico
-        propiedadesCuerpo.position.set(sprite.getX(), sprite.getY());
-
-        cuerpo = mundo.createBody(propiedadesCuerpo); //Creamos el cuerpo en el mundo de nuestro juego
-
-        /*
-        Creamos las propiedades físicas del cuerpo del personaje
-         */
-        propiedadesFisicasCuerpo = new FixtureDef();
-        propiedadesFisicasCuerpo.shape = new PolygonShape();
-        ((PolygonShape) propiedadesFisicasCuerpo.shape).setAsBox(anchuraSprite / 2f, alturaSprite / 2f);
-        propiedadesFisicasCuerpo.density = 1f;
-        cuerpo.createFixture(propiedadesFisicasCuerpo);
-
+        creaFisica();
         sprite.setOrigin(this.sprite.getWidth() / 2,this.sprite.getHeight() / 2);
     }
 
@@ -106,6 +90,23 @@ public abstract class Personaje extends Actor {
 
     }
 
+    public void creaFisica(){
+        this.propiedadesCuerpo = new BodyDef(); //Establecemos las propiedades del cuerpo
+        propiedadesCuerpo.type = BodyDef.BodyType.DynamicBody; // Establecemos el tipo de cuerpo del personaje como dinámico
+        propiedadesCuerpo.position.set(sprite.getX(), sprite.getY());
+
+        cuerpo = mundo.createBody(propiedadesCuerpo); //Creamos el cuerpo en el mundo de nuestro juego
+
+        /*
+        Creamos las propiedades físicas del cuerpo del personaje
+         */
+        propiedadesFisicasCuerpo = new FixtureDef();
+        propiedadesFisicasCuerpo.shape = new PolygonShape();
+        ((PolygonShape) propiedadesFisicasCuerpo.shape).setAsBox(1 / 2f, 1 / 2f);
+        propiedadesFisicasCuerpo.density = 1f;
+        cuerpo.createFixture(propiedadesFisicasCuerpo);
+    }
+
     public Body getCuerpo(){
         return cuerpo;
     }
@@ -119,7 +120,11 @@ public abstract class Personaje extends Actor {
 
     public void seguir(OrthographicCamera camara){
         camara.position.x=this.cuerpo.getPosition().x;
-        camara.position.y=this.cuerpo.getPosition().y;
+
+        if(this.cuerpo.getPosition().y>8){
+            camara.position.y=this.cuerpo.getPosition().y+2;
+        }
+
     }
 
     /*

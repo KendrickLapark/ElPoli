@@ -3,12 +3,14 @@ package com.el.poli.pantallas;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -28,7 +30,14 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.el.poli.Juego;
 import com.el.poli.actores.Boo;
@@ -61,12 +70,20 @@ public class PantallaJuego implements Screen {
     private EscuchadorTeclado teclado;
     private ArrayList<Bola>listBolas;
     private boolean poseeRadar,poseeManzana;
-    private Sound sound;
+    private Music sonido;
 
     private SpriteBatch batchTexto;
-    private BitmapFont bitmapafuente;
+    private BitmapFont textoVidas;
 
-    private Viewport vp;
+    private Stage ifAndroid;
+
+    //Botones para android
+
+    private ImageButton rightBoton;
+    private ImageButton leftBoton;
+    private ImageButton jumpBoton;
+    private TextureAtlas buttonAtlas;
+    private Stage stage;
 
     public PantallaJuego(Juego j){
         this.juego = j;
@@ -74,9 +91,10 @@ public class PantallaJuego implements Screen {
         contBolas = 0;
         vidas = 5;
         batchTexto = new SpriteBatch();
-        sound = Gdx.audio.newSound(Gdx.files.internal("musica/dbz.mp3"));
-        sound.play(3f);
-        vp = new FitViewport(1400,700,camara);
+        sonido = Gdx.audio.newMusic(Gdx.files.internal("musica/dbz.mp3"));
+        sonido.play();
+        sonido.setVolume(3f);
+        sonido.setLooping(true);
 
         listBolas = new ArrayList<>();
         batch = new SpriteBatch();
@@ -107,9 +125,92 @@ public class PantallaJuego implements Screen {
         this.dbRenderer = new Box2DDebugRenderer();
         camara.position.x=vegeta.getX()+10;
         camara.position.y= vegeta.getY()+10;
-        //camara.zoom=1.5f;
+        camara.zoom=2f;
         /*teclado = new EscuchadorTeclado(vegeta);
         Gdx.input.setInputProcessor(teclado);*/
+
+        //Texto para el juego
+
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fuente/impact.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 64;
+        parameter.borderColor=new Color(444f,0.4f,0,1);
+        parameter.borderWidth=1f;
+        parameter.incremental=true;
+        textoVidas = generator.generateFont(parameter);
+
+        //Botones para android
+        stage=new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+        buttonAtlas= new TextureAtlas("boton/botonesA.pack");
+        Skin btSkin=new Skin();
+        btSkin.addRegions(buttonAtlas);
+
+        ImageButton.ImageButtonStyle botonDerecha=new ImageButton.ImageButtonStyle();
+        botonDerecha.up=btSkin.getDrawable("botonDerecha");
+        rightBoton=new ImageButton(botonDerecha);
+
+
+        rightBoton.addListener(new InputListener() {
+
+
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                        vegeta.getCuerpo().applyLinearImpulse(new Vector2(5, 0), vegeta.getCuerpo().getWorldCenter(), true);
+
+
+                return true;
+            }
+        });
+
+        ImageButton.ImageButtonStyle botonIzquierda=new ImageButton.ImageButtonStyle();
+        botonIzquierda.up=btSkin.getDrawable("botonIzquierda");
+        leftBoton=new ImageButton(botonIzquierda);
+
+
+        leftBoton.addListener(new InputListener() {
+
+
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                vegeta.getCuerpo().applyLinearImpulse(new Vector2(-5, 0), vegeta.getCuerpo().getWorldCenter(), true);
+
+
+                return true;
+            }
+        });
+
+        ImageButton.ImageButtonStyle botonSalto=new ImageButton.ImageButtonStyle();
+        botonSalto.up=btSkin.getDrawable("botonArriba");
+        jumpBoton=new ImageButton(botonSalto);
+
+
+        jumpBoton.addListener(new InputListener() {
+
+
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                vegeta.getCuerpo().applyLinearImpulse(new Vector2(0, 5), vegeta.getCuerpo().getWorldCenter(), true);
+
+
+                return true;
+            }
+        });
+
+        Table tb=new Table();
+        tb.bottom();
+        tb.setFillParent(true);
+        tb.add(leftBoton).height(Gdx.graphics.getHeight()/6).width(Gdx.graphics.getWidth()/7);
+        tb.add(rightBoton).height(Gdx.graphics.getHeight()/6).width(Gdx.graphics.getWidth()/7).padRight(Gdx.graphics.getWidth() / 2.7f);
+        tb.add(jumpBoton).height(Gdx.graphics.getHeight()/6).width(Gdx.graphics.getWidth()/7);
+        stage.addActor(tb);
+
 
 
         for (MapObject objeto:mapa.getLayers().get("suelo").getObjects()){
@@ -169,12 +270,12 @@ public class PantallaJuego implements Screen {
 
     @Override
     public void render(float delta) {
+
         actualizar(delta);
-        Gdx.gl.glClearColor(0, 0, 0f, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         vegeta.seguir(camara);
-        renderer.setView(camara);
         renderer.render();
         batch.setProjectionMatrix(camara.combined);
         batch.begin();
@@ -247,18 +348,13 @@ public class PantallaJuego implements Screen {
         batch.end();
 
         batchTexto.begin();
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fuente/impact.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 16;
-        parameter.borderColor=new Color(444f,0.4f,0,1);
-        parameter.borderWidth=1f;
-        parameter.incremental=true;
-        bitmapafuente = generator.generateFont(parameter);
-        bitmapafuente.draw(batchTexto, "Vidas: " + vidas, Gdx.graphics.getHeight() / 30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), -1, false);
+        textoVidas.draw(batchTexto, "Vidas: " + vidas, Gdx.graphics.getHeight() / 30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), -1, false);
         batchTexto.end();
 
+        stage.act();
+        stage.draw();
+
         camara.update();
-        dbRenderer.render(world,camara.combined);
     }
 
     @Override
@@ -283,11 +379,16 @@ public class PantallaJuego implements Screen {
 
     @Override
     public void dispose() {
+
         renderer.dispose();
         world.dispose();
-        sound.dispose();
+        sonido.dispose();
         batch.dispose();
         batchTexto.dispose();
+        stage.dispose();
+        textoVidas.dispose();
+        dbRenderer.dispose();
+
 
     }
 
@@ -307,15 +408,15 @@ public class PantallaJuego implements Screen {
 
         if(!poseeManzana) {
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && vegeta.getCuerpo().getLinearVelocity().y==0) {
+            if (Gdx.input.isKeyPressed(Input.Keys.UP) && vegeta.getCuerpo().getLinearVelocity().y==0) {
                 vegeta.getCuerpo().applyLinearImpulse(new Vector2(0, 10), vegeta.getCuerpo().getWorldCenter(), true);
             }
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && vegeta.getCuerpo().getLinearVelocity().x <= 2) {
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && vegeta.getCuerpo().getLinearVelocity().x <= 2) {
                 vegeta.getCuerpo().applyLinearImpulse(new Vector2(5, 0), vegeta.getCuerpo().getWorldCenter(), true);
             }
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && vegeta.getCuerpo().getLinearVelocity().x >= 0) {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && vegeta.getCuerpo().getLinearVelocity().x <= 2) {
                 vegeta.getCuerpo().applyLinearImpulse(new Vector2(-5, 0), vegeta.getCuerpo().getWorldCenter(), true);
             }
         }else{

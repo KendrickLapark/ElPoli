@@ -42,4 +42,5 @@ public class CellJr extends Personaje {
         }
 
     }
+
 }
