@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -33,6 +34,7 @@ public class Vegeta extends Personaje {
     public Vegeta(World w, String rutaTextura, float x, float y) {
         super(w, rutaTextura, x, y);
         vidas = 5;
+
     }
 
     public OrthographicCamera getCamara(){
@@ -46,4 +48,5 @@ public class Vegeta extends Personaje {
     public void setVidas(int vidas) {
         this.vidas = vidas;
     }
+
 }

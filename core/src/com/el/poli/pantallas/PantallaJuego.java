@@ -131,7 +131,7 @@ public class PantallaJuego implements Screen {
 
         //Texto para el juego
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fuente/impact.ttf"));
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fuente/saiyan.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 64;
         parameter.borderColor=new Color(444f,0.4f,0,1);
@@ -348,7 +348,7 @@ public class PantallaJuego implements Screen {
         batch.end();
 
         batchTexto.begin();
-        textoVidas.draw(batchTexto, "Vidas: " + vidas, Gdx.graphics.getHeight() / 30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), -1, false);
+        textoVidas.draw(batchTexto, "Space Warriors: " + vidas, Gdx.graphics.getHeight() / 30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), -1, false);
         batchTexto.end();
 
         stage.act();
@@ -408,7 +408,7 @@ public class PantallaJuego implements Screen {
 
         if(!poseeManzana) {
 
-            if (Gdx.input.isKeyPressed(Input.Keys.UP) && vegeta.getCuerpo().getLinearVelocity().y==0) {
+            if (Gdx.input.isKeyPressed(Input.Keys.UP) && vegeta.getCuerpo().getLinearVelocity().y<1 && vegeta.getCuerpo().getPosition().y<4) {
                 vegeta.getCuerpo().applyLinearImpulse(new Vector2(0, 10), vegeta.getCuerpo().getWorldCenter(), true);
             }
 
@@ -416,7 +416,7 @@ public class PantallaJuego implements Screen {
                 vegeta.getCuerpo().applyLinearImpulse(new Vector2(5, 0), vegeta.getCuerpo().getWorldCenter(), true);
             }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && vegeta.getCuerpo().getLinearVelocity().x <= 2) {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && vegeta.getCuerpo().getLinearVelocity().x >= -2) {
                 vegeta.getCuerpo().applyLinearImpulse(new Vector2(-5, 0), vegeta.getCuerpo().getWorldCenter(), true);
             }
         }else{
