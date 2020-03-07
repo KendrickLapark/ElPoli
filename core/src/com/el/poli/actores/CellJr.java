@@ -1,5 +1,8 @@
 package com.el.poli.actores;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.World;
 
 
@@ -43,4 +46,17 @@ public class CellJr extends Personaje {
 
     }
 
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+        if(this.getCuerpo().getLinearVelocity().x>0){
+            ida = true;
+            this.sprite = new Sprite(new Texture("personajes/celljr2.png"));
+            this.sprite.setBounds(20,4,2,2);
+        }else if(this.getCuerpo().getLinearVelocity().x<0){
+            ida = false;
+            this.sprite = new Sprite(new Texture("personajes/celljr.png"));
+            this.sprite.setBounds(20,4,2,2);
+        }
+    }
 }

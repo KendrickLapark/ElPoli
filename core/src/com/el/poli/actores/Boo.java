@@ -64,6 +64,19 @@ public class Boo extends Personaje {
 
     }
 
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+        if(this.getCuerpo().getLinearVelocity().x>0){
+            ida = true;
+            this.sprite = new Sprite(new Texture("personajes/boo2.png"));
+            this.sprite.setBounds(20,4,2,2);
+        }else if(this.getCuerpo().getLinearVelocity().x<0){
+            ida = false;
+            this.sprite = new Sprite(new Texture("personajes/boo.png"));
+            this.sprite.setBounds(20,4,2,2);
+        }
+    }
 }
 
 

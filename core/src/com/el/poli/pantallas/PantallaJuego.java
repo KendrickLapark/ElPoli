@@ -8,7 +8,9 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -36,9 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.el.poli.Juego;
 import com.el.poli.actores.Boo;
 import com.el.poli.actores.CellJr;
@@ -93,7 +93,7 @@ public class PantallaJuego implements Screen {
         batchTexto = new SpriteBatch();
         sonido = Gdx.audio.newMusic(Gdx.files.internal("musica/dbz.mp3"));
         sonido.play();
-        sonido.setVolume(3f);
+        sonido.setVolume(0.03f);
         sonido.setLooping(true);
 
         listBolas = new ArrayList<>();
@@ -126,12 +126,10 @@ public class PantallaJuego implements Screen {
         camara.position.x=vegeta.getX()+10;
         camara.position.y= vegeta.getY()+10;
         camara.zoom=2f;
-        /*teclado = new EscuchadorTeclado(vegeta);
-        Gdx.input.setInputProcessor(teclado);*/
 
         //Texto para el juego
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fuente/saiyan.ttf"));
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fuente/impact.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 64;
         parameter.borderColor=new Color(444f,0.4f,0,1);
@@ -241,7 +239,14 @@ public class PantallaJuego implements Screen {
                     vegeta.getCuerpo().applyForceToCenter(100,200,true);
                     vegeta.setVidas(vidas--);
                     //baseDeDatos.guardar(puntuacion);
-                    Gdx.app.log("Bolas recogidas:",bolas+"");
+                    //Gdx.app.log("Bolas recogidas:",bolas+"");
+                }
+                if(contact.getFixtureA().getBody()==vegeta.getCuerpo()&&
+                        contact.getFixtureB().getBody()==bubu.getCuerpo()){
+                    vegeta.getCuerpo().applyForceToCenter(100,200,true);
+                    vegeta.setVidas(vidas--);
+                    //baseDeDatos.guardar(puntuacion);
+                    //Gdx.app.log("Bolas recogidas:",bolas+"");
                 }
             }
 
@@ -348,7 +353,7 @@ public class PantallaJuego implements Screen {
         batch.end();
 
         batchTexto.begin();
-        textoVidas.draw(batchTexto, "Space Warriors: " + vidas, Gdx.graphics.getHeight() / 30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), -1, false);
+        textoVidas.draw(batchTexto, "Vidas: "+vidas, Gdx.graphics.getHeight() / 30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), -1, false);
         batchTexto.end();
 
         stage.act();
@@ -414,10 +419,14 @@ public class PantallaJuego implements Screen {
 
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && vegeta.getCuerpo().getLinearVelocity().x <= 2) {
                 vegeta.getCuerpo().applyLinearImpulse(new Vector2(5, 0), vegeta.getCuerpo().getWorldCenter(), true);
+                vegeta.setSprite(new Sprite(new Texture("personajes/vegira.png")));
+                vegeta.getSprite().setBounds(vegeta.getCuerpo().getPosition().x,vegeta.getCuerpo().getPosition().y,2,2);
             }
 
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && vegeta.getCuerpo().getLinearVelocity().x >= -2) {
                 vegeta.getCuerpo().applyLinearImpulse(new Vector2(-5, 0), vegeta.getCuerpo().getWorldCenter(), true);
+                vegeta.setSprite(new Sprite(new Texture("personajes/vegira2.png")));
+                vegeta.getSprite().setBounds(vegeta.getCuerpo().getPosition().x,vegeta.getCuerpo().getPosition().y,2,2);
             }
         }else{
 
@@ -425,12 +434,16 @@ public class PantallaJuego implements Screen {
                 vegeta.getCuerpo().applyLinearImpulse(new Vector2(0, 10), vegeta.getCuerpo().getWorldCenter(), true);
             }
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && vegeta.getCuerpo().getLinearVelocity().x <= 2) {
-                vegeta.getCuerpo().applyLinearImpulse(new Vector2(30, 0), vegeta.getCuerpo().getWorldCenter(), true);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && vegeta.getCuerpo().getLinearVelocity().x <= 10) {
+                vegeta.getCuerpo().applyLinearImpulse(new Vector2(8, 0), vegeta.getCuerpo().getWorldCenter(), true);
+                vegeta.setSprite(new Sprite(new Texture("personajes/vegira.png")));
+                vegeta.getSprite().setBounds(vegeta.getCuerpo().getPosition().x,vegeta.getCuerpo().getPosition().y,2,2);
             }
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && vegeta.getCuerpo().getLinearVelocity().x >= 0) {
-                vegeta.getCuerpo().applyLinearImpulse(new Vector2(-30, 0), vegeta.getCuerpo().getWorldCenter(), true);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && vegeta.getCuerpo().getLinearVelocity().x >= -10) {
+                vegeta.getCuerpo().applyLinearImpulse(new Vector2(-8, 0), vegeta.getCuerpo().getWorldCenter(), true);
+                vegeta.setSprite(new Sprite(new Texture("personajes/vegira2.png")));
+                vegeta.getSprite().setBounds(vegeta.getCuerpo().getPosition().x,vegeta.getCuerpo().getPosition().y,2,2);
             }
         }
     }

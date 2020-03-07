@@ -37,6 +37,9 @@ public abstract class Personaje extends Actor {
     public Personaje(World w, String rutaTextura){
 
         mundo = w;
+
+
+
         sprite = new Sprite(new Texture(rutaTextura));
         int anchuraSprite = 1; //Anchura y altura se expresan ahora en metros
         int alturaSprite = 1;//Anchura y altura se expresan ahora en metros
@@ -75,6 +78,8 @@ public abstract class Personaje extends Actor {
         sprite.setBounds(x, y,alturaSprite * 2, anchuraSprite * 2); // determinamos la posición inicial y la dimensión del sprite del personaje
         creaFisica();
         sprite.setOrigin(this.sprite.getWidth() / 2,this.sprite.getHeight() / 2);
+
+
     }
 
     /**
@@ -148,5 +153,11 @@ public abstract class Personaje extends Actor {
         return sprite.getBoundingRectangle();
     }
 
+    public Sprite getSprite() {
+        return sprite;
+    }
 
+    public void setSprite(Sprite sprite) {
+        this.sprite = sprite;
+    }
 }

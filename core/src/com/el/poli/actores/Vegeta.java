@@ -49,4 +49,5 @@ public class Vegeta extends Personaje {
         this.vidas = vidas;
     }
 
+
 }
