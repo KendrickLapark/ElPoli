@@ -45,9 +45,12 @@ import java.util.ArrayList;
 
 public class Juego extends Game{
 
+	private SpriteBatch batch;
 
 	@Override
 	public void create() {
+
+		batch = new SpriteBatch();
 
 		setScreen(new PantallaJuego(this));
 	}
@@ -60,9 +63,8 @@ public class Juego extends Game{
 	}
 
 
-
-
-
-
+	public SpriteBatch getBatch() {
+		return batch;
+	}
 }
 

@@ -55,6 +55,7 @@ public class PantallaJuego implements Screen {
     private Juego juego;
     private World world;
     private SpriteBatch batch;
+    private Sprite menuGameOver;
     private TiledMap mapa;
     private OrthographicCamera camara;
     private OrthogonalTiledMapRenderer renderer;
@@ -71,6 +72,7 @@ public class PantallaJuego implements Screen {
     private ArrayList<Bola>listBolas;
     private boolean poseeRadar,poseeManzana;
     private Music sonido;
+
 
     private SpriteBatch batchTexto;
     private BitmapFont textoVidas;
@@ -156,7 +158,22 @@ public class PantallaJuego implements Screen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
+                if(!poseeManzana){
+                    if(vegeta.getCuerpo().getLinearVelocity().x <= 2){
                         vegeta.getCuerpo().applyLinearImpulse(new Vector2(5, 0), vegeta.getCuerpo().getWorldCenter(), true);
+                        vegeta.setSprite(new Sprite(new Texture("personajes/vegira.png")));
+                        vegeta.getSprite().setBounds(vegeta.getCuerpo().getPosition().x,vegeta.getCuerpo().getPosition().y,2,2);
+                    }
+
+                }else{
+
+                    if(vegeta.getCuerpo().getLinearVelocity().x <= 10){
+                        vegeta.getCuerpo().applyLinearImpulse(new Vector2(8, 0), vegeta.getCuerpo().getWorldCenter(), true);
+                        vegeta.setSprite(new Sprite(new Texture("personajes/vegira.png")));
+                        vegeta.getSprite().setBounds(vegeta.getCuerpo().getPosition().x,vegeta.getCuerpo().getPosition().y,2,2);
+                    }
+
+                }
 
 
                 return true;
@@ -175,7 +192,22 @@ public class PantallaJuego implements Screen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
-                vegeta.getCuerpo().applyLinearImpulse(new Vector2(-5, 0), vegeta.getCuerpo().getWorldCenter(), true);
+                if(!poseeManzana){
+                    if(vegeta.getCuerpo().getLinearVelocity().x >= -2){
+                        vegeta.getCuerpo().applyLinearImpulse(new Vector2(-5, 0), vegeta.getCuerpo().getWorldCenter(), true);
+                        vegeta.setSprite(new Sprite(new Texture("personajes/vegira2.png")));
+                        vegeta.getSprite().setBounds(vegeta.getCuerpo().getPosition().x,vegeta.getCuerpo().getPosition().y,2,2);
+                    }
+
+                }else{
+
+                    if(vegeta.getCuerpo().getLinearVelocity().x >= -10){
+                        vegeta.getCuerpo().applyLinearImpulse(new Vector2(-8, 0), vegeta.getCuerpo().getWorldCenter(), true);
+                        vegeta.setSprite(new Sprite(new Texture("personajes/vegira2.png")));
+                        vegeta.getSprite().setBounds(vegeta.getCuerpo().getPosition().x,vegeta.getCuerpo().getPosition().y,2,2);
+                    }
+
+                }
 
 
                 return true;
@@ -194,7 +226,14 @@ public class PantallaJuego implements Screen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
-                vegeta.getCuerpo().applyLinearImpulse(new Vector2(0, 5), vegeta.getCuerpo().getWorldCenter(), true);
+                if(!poseeManzana){
+                    if(vegeta.getCuerpo().getLinearVelocity().y<1 && vegeta.getCuerpo().getPosition().y<4){
+                        vegeta.getCuerpo().applyLinearImpulse(new Vector2(0, 5), vegeta.getCuerpo().getWorldCenter(), true);
+                    }
+
+                }else{
+                    vegeta.getCuerpo().applyLinearImpulse(new Vector2(0, 10), vegeta.getCuerpo().getWorldCenter(), true);
+                }
 
 
                 return true;
@@ -342,7 +381,6 @@ public class PantallaJuego implements Screen {
         }
 
         if(vidas == 0){
-            System.exit(0);
         }
 
         System.out.println("La x de vegeta: "+vegeta.getCuerpo().getPosition().x+" La y de vegeta: "+vegeta.getCuerpo().getPosition().y);
@@ -455,4 +493,10 @@ public class PantallaJuego implements Screen {
         camara.update();
         renderer.setView(camara);
     }
+
+    public SpriteBatch getBatch() {
+        return batch;
+    }
+
+
 }
