@@ -24,25 +24,12 @@ import java.util.HashSet;
 public class Vegeta extends Personaje {
 
     private OrthographicCamera camara; //Cámara que renderiza al jugado
-    private boolean colision;
-    private int vidas;
-
-    public Vegeta(World w, String rutaTextura) {
-        super(w, rutaTextura);
-    }
+    private int vidas;//Vidas del personaje
 
     public Vegeta(World w, String rutaTextura, float x, float y) {
         super(w, rutaTextura, x, y);
         vidas = 5;
 
-    }
-
-    public OrthographicCamera getCamara(){
-        return this.camara;
-    }
-
-    public int getVidas() {
-        return vidas;
     }
 
     public void setVidas(int vidas) {

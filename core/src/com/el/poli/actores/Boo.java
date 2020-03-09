@@ -18,17 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 
 import java.sql.Time;
 
-
 public class Boo extends Personaje {
 
-    private float posOriginal;
-    private int cont;
-    private boolean ida;
-
-    public Boo(World w, String rutaTextura) {
-        super(w, rutaTextura);
-
-    }
+    private boolean ida;//Boolean para controlar el pathing del enemigo
 
     public Boo(World w, String rutaTextura, float x, float y) {
         super(w, rutaTextura, x, y);
@@ -46,9 +38,11 @@ public class Boo extends Personaje {
 
     }
 
-    public void patrullar() {
+    /*
+    Método para que el actor patrulle una zona en el eje x
+     */
 
-        System.out.println("la equis de boo: "+this.getCuerpo().getPosition().x+" Ida: "+ida);
+    public void patrullar() {
 
         if(this.getCuerpo().getPosition().x<150 && ida == true){
             this.getCuerpo().setLinearVelocity(3,0);

@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -19,6 +18,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -49,37 +49,39 @@ import com.el.poli.objetos.Manzana;
 import com.el.poli.objetos.Radar;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class PantallaJuego implements Screen {
 
-    private Juego juego;
-    private World world;
-    private SpriteBatch batch;
-    private Sprite menuGameOver;
-    private TiledMap mapa;
-    private OrthographicCamera camara;
-    private OrthogonalTiledMapRenderer renderer;
-    private Vegeta vegeta;
-    private Boo bubu;
-    private Bola bola1, bola2, bola3, bola4, bola5, bola6, bola7;
-    private Radar radar;
-    private Manzana manzana;
-    private CellJr cellJr;
-    private int bolas, contBolas, vidas;
+    private Juego juego; //Clase principal que hereda de Game
+    private World world; //Mundo de nuestro juego
+    private SpriteBatch batch; //Batch donde representanmos el mundo 2d
+
+    private TiledMap mapa; //Mapa del juego
+    private OrthographicCamera camara; //Camara del juego
+    private OrthogonalTiledMapRenderer renderer; //Renderer del mapa
+
+    private Vegeta vegeta;//Nuestro personaje principal
+    private Boo bubu;// Enemigo
+    private Bola bola1, bola2, bola3, bola4, bola5, bola6, bola7; //Clase que hereda de ObjetoJuego, representa los objetos que hay que conseguir
+    private Radar radar; // Clase que hereda de ObjetoJuego, necesario para conseguir los demas objetos
+    private Manzana manzana; //Clase que hereda de ObjetoJuego, aumenta la velocidad y permite volar al personaje
+    private CellJr cellJr; //Enemigo
+    private int vidas; //Vidas de nuestro jugador
     private Box2DDebugRenderer dbRenderer;
     private static final float pixelsPorCuadro = 16f;
-    private EscuchadorTeclado teclado;
-    private ArrayList<Bola>listBolas;
-    private boolean poseeRadar,poseeManzana;
-    private Music sonido;
+    private ArrayList<Bola>listBolas; //Coleccion con las bolas
+    private boolean poseeRadar,poseeManzana; //Bolean para detectar interacciones
+    private Music sonido; //Música de fondo
 
 
+    //Atributos para representar la hud del juego, contiene las vidas del jugador
     private SpriteBatch batchTexto;
     private BitmapFont textoVidas;
+    private BitmapFont textoVictoria;
 
-    private Stage ifAndroid;
 
-    //Botones para android
+    //Botones para android y texture atlas de los botones que aparecen en el juego,
 
     private ImageButton rightBoton;
     private ImageButton leftBoton;
@@ -89,8 +91,6 @@ public class PantallaJuego implements Screen {
 
     public PantallaJuego(Juego j){
         this.juego = j;
-        bolas = 0;
-        contBolas = 0;
         vidas = 5;
         batchTexto = new SpriteBatch();
         sonido = Gdx.audio.newMusic(Gdx.files.internal("musica/dbz.mp3"));
@@ -122,7 +122,6 @@ public class PantallaJuego implements Screen {
         listBolas.add(bola6);
         listBolas.add(bola7);
         radar = new Radar(world, "bolas/radar.png",150,5);  //150, 5 coordenadas iniciales
-
         renderer = new OrthogonalTiledMapRenderer(mapa,1/pixelsPorCuadro);
         this.dbRenderer = new Box2DDebugRenderer();
         camara.position.x=vegeta.getX()+10;
@@ -139,7 +138,16 @@ public class PantallaJuego implements Screen {
         parameter.incremental=true;
         textoVidas = generator.generateFont(parameter);
 
-        //Botones para android
+        FreeTypeFontGenerator generator2 = new FreeTypeFontGenerator(Gdx.files.internal("fuente/saiyan.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter2 = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 100;
+        parameter.borderColor=new Color(0.1f,0.1f,0.1f,1);
+        parameter.borderWidth=3f;
+        parameter.incremental=true;
+        textoVictoria = generator.generateFont(parameter);
+
+        //Botones para android y los listener para interactuar, se representa en pantalla agregando una tabla a un stage en la pantalla
+
         stage=new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         buttonAtlas= new TextureAtlas("boton/botonesA.pack");
@@ -249,6 +257,7 @@ public class PantallaJuego implements Screen {
         stage.addActor(tb);
 
 
+        //bucle que define las propiedades físicas de la capa denominada "suelo" de nuestro tilemap
 
         for (MapObject objeto:mapa.getLayers().get("suelo").getObjects()){
             BodyDef propiedadesRectangulo= new BodyDef(); //Establecemos las propiedades del cuerpo
@@ -262,13 +271,13 @@ public class PantallaJuego implements Screen {
         }
 
 
+        //ContactListener para detectar el contacto entre los actores
+
 
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
-                Gdx.app.log("Contacto comenzado!",contact.getFixtureA()+" : "+contact.getFixtureB());
-                Gdx.app.log("Es figura A vegeta?",(contact.getFixtureA().getBody()==vegeta.getCuerpo())+"");
-                Gdx.app.log("Es figura B bola?",(contact.getFixtureB().getBody()==bola1.getCuerpo())+"");
+
                 if(contact.getFixtureA().getBody()==vegeta.getCuerpo()&&
                         contact.getFixtureB().getBody()==bola1.getCuerpo()){
                     Gdx.app.log("Vegeta","Vegeta ha tocado la bola");
@@ -277,16 +286,13 @@ public class PantallaJuego implements Screen {
                         contact.getFixtureB().getBody()==cellJr.getCuerpo()){
                     vegeta.getCuerpo().applyForceToCenter(100,200,true);
                     vegeta.setVidas(vidas--);
-                    //baseDeDatos.guardar(puntuacion);
-                    //Gdx.app.log("Bolas recogidas:",bolas+"");
                 }
                 if(contact.getFixtureA().getBody()==vegeta.getCuerpo()&&
-                        contact.getFixtureB().getBody()==bubu.getCuerpo()){
+                        contact.getFixtureB().getBody()==bola1.getCuerpo()){
                     vegeta.getCuerpo().applyForceToCenter(100,200,true);
                     vegeta.setVidas(vidas--);
-                    //baseDeDatos.guardar(puntuacion);
-                    //Gdx.app.log("Bolas recogidas:",bolas+"");
                 }
+
             }
 
             @Override
@@ -314,7 +320,6 @@ public class PantallaJuego implements Screen {
 
     @Override
     public void render(float delta) {
-
         actualizar(delta);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -374,21 +379,30 @@ public class PantallaJuego implements Screen {
             poseeManzana = true;
         }
 
-        System.out.println(poseeManzana+"?laposee?");
-
         if(!poseeManzana){
             manzana.draw(batch,0);
         }
-
-        if(vidas == 0){
-        }
-
-        System.out.println("La x de vegeta: "+vegeta.getCuerpo().getPosition().x+" La y de vegeta: "+vegeta.getCuerpo().getPosition().y);
 
         bubu.patrullar();
         cellJr.patrullar();
 
         batch.end();
+
+        if(listBolas.size() == 0){
+            batchTexto.begin();
+            batchTexto.setTransformMatrix(new Matrix4().setToRotation(0,0,1,30));
+            textoVictoria.draw(batchTexto, "¡VICTORIA!",70, Gdx.graphics.getHeight()/2-100,Gdx.graphics.getWidth(),1,false);
+            Random r=new Random();
+            textoVictoria.setColor(new Color(r.nextFloat(),r.nextFloat(),r.nextFloat(),1));
+            textoVictoria.getData().setScale(1.2f);
+            batchTexto.end();
+            
+        }
+
+        if(vidas==0){
+            juego.setScreen(new PantallaGameOver(this.juego));
+            sonido.stop();
+        }
 
         batchTexto.begin();
         textoVidas.draw(batchTexto, "Vidas: "+vidas, Gdx.graphics.getHeight() / 30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), -1, false);
@@ -398,6 +412,8 @@ public class PantallaJuego implements Screen {
         stage.draw();
 
         camara.update();
+
+        dbRenderer.render(world,camara.combined);
     }
 
     @Override
@@ -443,9 +459,9 @@ public class PantallaJuego implements Screen {
         return polygon;
     }
 
-    public void dibujaBola(Bola b){
-        b.draw(batch,0);
-    }
+    /*
+    Método para manejar la órdenes del jugador sobre el personaje
+     */
 
     public void entrada(float delta, boolean poseeManzana){
 
@@ -466,6 +482,7 @@ public class PantallaJuego implements Screen {
                 vegeta.setSprite(new Sprite(new Texture("personajes/vegira2.png")));
                 vegeta.getSprite().setBounds(vegeta.getCuerpo().getPosition().x,vegeta.getCuerpo().getPosition().y,2,2);
             }
+
         }else{
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
@@ -486,16 +503,15 @@ public class PantallaJuego implements Screen {
         }
     }
 
+    //Método para actualizar la cámara
+
     public void actualizar(float delta){
         entrada(delta,poseeManzana);
 
         world.step(1/60f,6,2);
+
         camara.update();
         renderer.setView(camara);
-    }
-
-    public SpriteBatch getBatch() {
-        return batch;
     }
 
 
