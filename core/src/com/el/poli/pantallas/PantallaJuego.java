@@ -66,11 +66,11 @@ public class PantallaJuego implements Screen {
     private Bola bola1, bola2, bola3, bola4, bola5, bola6, bola7; //Clase que hereda de ObjetoJuego, representa los objetos que hay que conseguir
     private Radar radar; // Clase que hereda de ObjetoJuego, necesario para conseguir los demas objetos
     private Manzana manzana; //Clase que hereda de ObjetoJuego, aumenta la velocidad y permite volar al personaje
-    private CellJr cellJr; //Enemigo
-    private int vidas; //Vidas de nuestro jugador
+    private CellJr cellJr, cell2; //Enemigo
+    public int vidas; //Vidas de nuestro jugador
     private Box2DDebugRenderer dbRenderer;
     private static final float pixelsPorCuadro = 16f;
-    private ArrayList<Bola>listBolas; //Coleccion con las bolas
+    public ArrayList<Bola>listBolas; //Coleccion con las bolas
     private boolean poseeRadar,poseeManzana; //Bolean para detectar interacciones
     private Music sonido; //Música de fondo
 
@@ -103,7 +103,8 @@ public class PantallaJuego implements Screen {
         world = new World(new Vector2(0,-9.8f),true);
         vegeta = new Vegeta(world,"personajes/vegira.png",5,4);
         bubu = new Boo(world, "personajes/boo.png",139,2);
-        cellJr = new CellJr(world,"personajes/celljr.png", 10,2);
+        cellJr = new CellJr(world,"personajes/celljr.png", 86,17);
+        cell2 = new CellJr(world,"personajes/celljr.png", 129,24);
         camara = new OrthographicCamera(20,20);
         mapa = new TmxMapLoader().load("mapa/mapa1.tmx");
         bola1 = new Bola(world, "bolas/1.png", 156, 32);
@@ -288,7 +289,12 @@ public class PantallaJuego implements Screen {
                     vegeta.setVidas(vidas--);
                 }
                 if(contact.getFixtureA().getBody()==vegeta.getCuerpo()&&
-                        contact.getFixtureB().getBody()==bola1.getCuerpo()){
+                        contact.getFixtureB().getBody()==cell2.getCuerpo()){
+                    vegeta.getCuerpo().applyForceToCenter(100,200,true);
+                    vegeta.setVidas(vidas--);
+                }
+                if(contact.getFixtureA().getBody()==vegeta.getCuerpo()&&
+                        contact.getFixtureB().getBody()==bubu.getCuerpo()){
                     vegeta.getCuerpo().applyForceToCenter(100,200,true);
                     vegeta.setVidas(vidas--);
                 }
@@ -332,6 +338,7 @@ public class PantallaJuego implements Screen {
         vegeta.draw(batch,0);
         bubu.draw(batch,0);
         cellJr.draw(batch,0);
+        cell2.draw(batch,0);
 
         if(!poseeRadar) {
             radar.draw(batch,0);
@@ -385,22 +392,17 @@ public class PantallaJuego implements Screen {
 
         bubu.patrullar();
         cellJr.patrullar();
+        cell2.patrullar();
 
         batch.end();
 
         if(listBolas.size() == 0){
-            batchTexto.begin();
-            batchTexto.setTransformMatrix(new Matrix4().setToRotation(0,0,1,30));
-            textoVictoria.draw(batchTexto, "¡VICTORIA!",70, Gdx.graphics.getHeight()/2-100,Gdx.graphics.getWidth(),1,false);
-            Random r=new Random();
-            textoVictoria.setColor(new Color(r.nextFloat(),r.nextFloat(),r.nextFloat(),1));
-            textoVictoria.getData().setScale(1.2f);
-            batchTexto.end();
-            
+            juego.setPantallaActual(new PantallaGameOver(this.juego,new Texture("atlas/menuvictoria.png"),2));
+            sonido.stop();
         }
 
         if(vidas==0){
-            juego.setScreen(new PantallaGameOver(this.juego));
+            juego.setPantallaActual(new PantallaGameOver(this.juego,new Texture("atlas/menuover.png"),1));
             sonido.stop();
         }
 

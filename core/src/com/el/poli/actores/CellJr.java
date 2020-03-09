@@ -27,17 +27,33 @@ public class CellJr extends Personaje {
      */
     public void patrullar() {
 
-        if(this.getCuerpo().getPosition().x<20 && ida == true){
-            this.getCuerpo().setLinearVelocity(3,0);
-        }else{
-            ida = false;
-        }
+     if(this.getCuerpo().getPosition().x<100) {
+         if (this.getCuerpo().getPosition().x < 95 && ida == true) {
+             this.getCuerpo().setLinearVelocity(3, 0);
+         } else {
+             ida = false;
+         }
 
-        if(this.getCuerpo().getPosition().x>10 && ida == false){
-            this.getCuerpo().setLinearVelocity(-3,0);
-        }else{
-            ida = true;
-        }
+         if (this.getCuerpo().getPosition().x > 84 && ida == false) {
+             this.getCuerpo().setLinearVelocity(-3, 0);
+         } else {
+             ida = true;
+         }
+     }else{
+
+         if (this.getCuerpo().getPosition().x < 132 && ida == true) {
+             this.getCuerpo().setLinearVelocity(3, 0);
+         } else {
+             ida = false;
+         }
+
+         if (this.getCuerpo().getPosition().x > 127 && ida == false) {
+             this.getCuerpo().setLinearVelocity(-3, 0);
+         } else {
+             ida = true;
+         }
+
+     }
 
     }
 

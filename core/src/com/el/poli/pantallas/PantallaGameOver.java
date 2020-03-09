@@ -12,11 +12,13 @@ public class PantallaGameOver implements Screen {
     protected Stage stage; //Stage para dibujar el fondo de nuestra pantalla de game over
     private Texture fondo; //Fondo de la pantalla
     private Juego juego; //Juego sobre el que se manejan las pantallas
+    private int opcion;
 
-    public PantallaGameOver(Juego j) {
+    public PantallaGameOver(Juego j,Texture f, int num) {
         this.juego = j;
         stage = new Stage(new FillViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight()));
-        fondo = new Texture("atlas/menuover.png");
+        fondo = f;
+        opcion = num;
 
     }
 
@@ -33,9 +35,15 @@ public class PantallaGameOver implements Screen {
         stage.getBatch().end();
         stage.draw();
 
-        coordenadas();
-        reiniciar();
-        salir();
+        System.out.println(opcion);
+
+        if(opcion == 1){
+            coordenadas();
+            reiniciar();
+            salir();
+        }else if(opcion == 2){
+            reiniciar2();
+        }
 
     }
 
@@ -64,8 +72,6 @@ public class PantallaGameOver implements Screen {
 
     }
 
-
-
     public void coordenadas(){
 
         if(Gdx.input.isTouched()){
@@ -78,7 +84,6 @@ public class PantallaGameOver implements Screen {
     public void reiniciar(){
         if (Gdx.input.getX()>131 && Gdx.input.getX()<250 && Gdx.input.getY()>223 && Gdx.input.getY()<278){
             this.juego.setScreen(new PantallaJuego(this.juego));
-            System.out.println("porqueee");
         }
     }
 
@@ -89,4 +94,11 @@ public class PantallaGameOver implements Screen {
             System.exit(0);
         }
     }
+
+    public void reiniciar2(){
+        if (Gdx.input.getX()>250 && Gdx.input.getX()<389 && Gdx.input.getY()<325 && Gdx.input.getY()>262){
+            this.juego.setScreen(new PantallaJuego(this.juego));
+        }
+    }
+
 }
