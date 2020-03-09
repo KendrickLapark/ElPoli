@@ -83,7 +83,7 @@ public class PantallaGameOver implements Screen {
 
     public void reiniciar(){
         if (Gdx.input.getX()>131 && Gdx.input.getX()<250 && Gdx.input.getY()>223 && Gdx.input.getY()<278){
-            this.juego.setScreen(new PantallaJuego(this.juego));
+            this.juego.setScreen(new PantallaJuego(this.juego, this.juego.baseDeDatos));
         }
     }
 
@@ -97,7 +97,7 @@ public class PantallaGameOver implements Screen {
 
     public void reiniciar2(){
         if (Gdx.input.getX()>250 && Gdx.input.getX()<389 && Gdx.input.getY()<325 && Gdx.input.getY()>262){
-            this.juego.setScreen(new PantallaJuego(this.juego));
+            this.juego.setScreen(new PantallaJuego(this.juego, this.juego.baseDeDatos));
         }
     }
 

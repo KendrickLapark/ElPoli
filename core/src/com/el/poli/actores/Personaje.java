@@ -108,6 +108,8 @@ public abstract class Personaje extends Actor {
         return colision;
     }
 
+    //Método para detectar la colision entre polígonos
+
     public Rectangle getHitBox(){
         return sprite.getBoundingRectangle();
     }

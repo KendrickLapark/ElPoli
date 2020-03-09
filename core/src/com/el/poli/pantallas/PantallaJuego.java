@@ -43,6 +43,7 @@ import com.el.poli.Juego;
 import com.el.poli.actores.Boo;
 import com.el.poli.actores.CellJr;
 import com.el.poli.actores.Vegeta;
+import com.el.poli.basededatos.BaseDeDatos;
 import com.el.poli.entradas.EscuchadorTeclado;
 import com.el.poli.objetos.Bola;
 import com.el.poli.objetos.Manzana;
@@ -67,18 +68,19 @@ public class PantallaJuego implements Screen {
     private Radar radar; // Clase que hereda de ObjetoJuego, necesario para conseguir los demas objetos
     private Manzana manzana; //Clase que hereda de ObjetoJuego, aumenta la velocidad y permite volar al personaje
     private CellJr cellJr, cell2; //Enemigo
-    public int vidas; //Vidas de nuestro jugador
+    public int vidas,puntuacion; //Vidas de nuestro jugador
     private Box2DDebugRenderer dbRenderer;
     private static final float pixelsPorCuadro = 16f;
     public ArrayList<Bola>listBolas; //Coleccion con las bolas
     private boolean poseeRadar,poseeManzana; //Bolean para detectar interacciones
     private Music sonido; //Música de fondo
+    BaseDeDatos baseDeDatos;
 
 
     //Atributos para representar la hud del juego, contiene las vidas del jugador
     private SpriteBatch batchTexto;
     private BitmapFont textoVidas;
-    private BitmapFont textoVictoria;
+    private BitmapFont textoPuntos;
 
 
     //Botones para android y texture atlas de los botones que aparecen en el juego,
@@ -89,8 +91,12 @@ public class PantallaJuego implements Screen {
     private TextureAtlas buttonAtlas;
     private Stage stage;
 
-    public PantallaJuego(Juego j){
+
+
+    public PantallaJuego(Juego j, BaseDeDatos bd){
         this.juego = j;
+        baseDeDatos = bd;
+        puntuacion = baseDeDatos.cargar();
         vidas = 5;
         batchTexto = new SpriteBatch();
         sonido = Gdx.audio.newMusic(Gdx.files.internal("musica/dbz.mp3"));
@@ -138,14 +144,9 @@ public class PantallaJuego implements Screen {
         parameter.borderWidth=1f;
         parameter.incremental=true;
         textoVidas = generator.generateFont(parameter);
+        textoPuntos = generator.generateFont(parameter);
 
-        FreeTypeFontGenerator generator2 = new FreeTypeFontGenerator(Gdx.files.internal("fuente/saiyan.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter2 = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 100;
-        parameter.borderColor=new Color(0.1f,0.1f,0.1f,1);
-        parameter.borderWidth=3f;
-        parameter.incremental=true;
-        textoVictoria = generator.generateFont(parameter);
+
 
         //Botones para android y los listener para interactuar, se representa en pantalla agregando una tabla a un stage en la pantalla
 
@@ -281,22 +282,28 @@ public class PantallaJuego implements Screen {
 
                 if(contact.getFixtureA().getBody()==vegeta.getCuerpo()&&
                         contact.getFixtureB().getBody()==bola1.getCuerpo()){
-                    Gdx.app.log("Vegeta","Vegeta ha tocado la bola");
                 }
                 if(contact.getFixtureA().getBody()==vegeta.getCuerpo()&&
                         contact.getFixtureB().getBody()==cellJr.getCuerpo()){
                     vegeta.getCuerpo().applyForceToCenter(100,200,true);
                     vegeta.setVidas(vidas--);
+                    puntuacion = vidas * 10;
+                    baseDeDatos.guardar(puntuacion);
                 }
                 if(contact.getFixtureA().getBody()==vegeta.getCuerpo()&&
                         contact.getFixtureB().getBody()==cell2.getCuerpo()){
                     vegeta.getCuerpo().applyForceToCenter(100,200,true);
                     vegeta.setVidas(vidas--);
+                    puntuacion = vidas * 10;
+                    baseDeDatos.guardar(puntuacion);
+                    Gdx.app.log("Puntación",puntuacion+"");
                 }
                 if(contact.getFixtureA().getBody()==vegeta.getCuerpo()&&
                         contact.getFixtureB().getBody()==bubu.getCuerpo()){
                     vegeta.getCuerpo().applyForceToCenter(100,200,true);
                     vegeta.setVidas(vidas--);
+                    puntuacion = vidas * 10;
+                    baseDeDatos.guardar(puntuacion);
                 }
 
             }
@@ -408,14 +415,13 @@ public class PantallaJuego implements Screen {
 
         batchTexto.begin();
         textoVidas.draw(batchTexto, "Vidas: "+vidas, Gdx.graphics.getHeight() / 30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), -1, false);
+        textoPuntos.draw(batchTexto, "Puntos: "+puntuacion, Gdx.graphics.getHeight() / -30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), 2, false);
         batchTexto.end();
 
         stage.act();
         stage.draw();
 
         camara.update();
-
-        dbRenderer.render(world,camara.combined);
     }
 
     @Override
@@ -449,7 +455,6 @@ public class PantallaJuego implements Screen {
         stage.dispose();
         textoVidas.dispose();
         dbRenderer.dispose();
-
 
     }
 
