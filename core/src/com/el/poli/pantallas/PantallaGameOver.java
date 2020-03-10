@@ -42,7 +42,9 @@ public class PantallaGameOver implements Screen {
             reiniciar();
             salir();
         }else if(opcion == 2){
-            reiniciar2();
+            if(Gdx.input.isTouched()){
+                reiniciar2();
+            }
         }
 
     }

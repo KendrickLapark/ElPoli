@@ -18,7 +18,6 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -44,13 +43,11 @@ import com.el.poli.actores.Boo;
 import com.el.poli.actores.CellJr;
 import com.el.poli.actores.Vegeta;
 import com.el.poli.basededatos.BaseDeDatos;
-import com.el.poli.entradas.EscuchadorTeclado;
 import com.el.poli.objetos.Bola;
 import com.el.poli.objetos.Manzana;
 import com.el.poli.objetos.Radar;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class PantallaJuego implements Screen {
 
@@ -120,7 +117,7 @@ public class PantallaJuego implements Screen {
         bola5 = new Bola(world, "bolas/5.png", 30,35);
         bola6 = new Bola(world, "bolas/6.png", 62,17);
         bola7 = new Bola(world, "bolas/7.png", 156,6);
-        manzana = new Manzana(world, "objetos/manzana.png",11,5);
+        manzana = new Manzana(world, "objetos/manzana.png",75,5);
         listBolas.add(bola1);
         listBolas.add(bola2);
         listBolas.add(bola3);
@@ -236,9 +233,12 @@ public class PantallaJuego implements Screen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
+                System.out.println("X:"+x+"Y:"+y+"estoo");
+
                 if(!poseeManzana){
                     if(vegeta.getCuerpo().getLinearVelocity().y<1 && vegeta.getCuerpo().getPosition().y<4){
-                        vegeta.getCuerpo().applyLinearImpulse(new Vector2(0, 5), vegeta.getCuerpo().getWorldCenter(), true);
+                        vegeta.getCuerpo().applyLinearImpulse(new Vector2(0, 10), vegeta.getCuerpo().getWorldCenter(), true);
+
                     }
 
                 }else{
@@ -412,6 +412,7 @@ public class PantallaJuego implements Screen {
             juego.setPantallaActual(new PantallaGameOver(this.juego,new Texture("atlas/menuover.png"),1));
             sonido.stop();
         }
+
 
         batchTexto.begin();
         textoVidas.draw(batchTexto, "Vidas: "+vidas, Gdx.graphics.getHeight() / 30, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 30, Gdx.graphics.getWidth(), -1, false);
